@@ -1,0 +1,13 @@
+stationId,stationName,latitude,longitude,elevation,qualifier,Procince,District,Sector
+10101100,GITEGA,-1.95617,30.057775,1522,AgroMet,Kigali ,Nyarugenge ,Gitega
+10306100,KIGALI AERO,-1.965028,30.133067,1490,Synoptic,Kigali ,Kicukiro,Kanombe
+20503100,GIKONGORO MET,-2.46719,29.7758,1941,AgroMet,Southern ,Nyamagabe ,Gasaka 
+20602100,BYIMANA,-2.16,29.71,1750,AgroMet,Southern ,Ruhango ,Byimana
+30109100,RUBENGERA MET,-2.0672,29.41047,1700,AgroMet,Western ,Karongi ,Rubengera 
+30304100,GISENYI AERO,-1.67608,29.25985,1554,Synoptic,Western ,Rubavu ,Gisenyi 
+30606100,KAMEMBE AERO,-2.47,28.92,1591,Synoptic,Western ,Rusizi ,Gihundwe
+40302100,BUSOGO-ISAE,-1.554288,29.550834,2100,AgroMet,Northern ,Musanze ,Busogo
+40503100,BYUMBA MET,-1.586517,30.049567,2235,AgroMet,Northern ,Gicumbi ,Byumba
+50210100,NYAGATARE,-1.28,30.31,1377,AgroMet,Eastern ,Nyagatare ,Nyagatare
+50410100,KAWANGIRE,-1.81,30.43,1473,AgroMet,Eastern ,Kayonza ,Rukara
+50604100,KIBUNGO-KAZO,-2.15,30.5,1604,AgroMet,Eastern ,Ngoma ,Kazo

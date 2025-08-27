@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        /* Optional base styles for statuses */
+        .status {
+            font-weight: bold;
+        }
+        .completed {
+            color: green;
+        }
+        .pending {
+            color: orange;
+        }
+        .cancelled {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Activity Schedule</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Date</th>
+                <th>Place</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SOFF meeting</td>
+                <td>12 August 2025</td>
+                <td>Online</td>
+                <td>Pending</td>  <!-- No class here -->
+            </tr>
+
+        </tbody>
+    </table>
+
+    <script>
+        // Detect status text and add class to style it
+        document.querySelectorAll("tbody tr td:nth-child(4)").forEach(cell => {
+            const status = cell.textContent.trim().toLowerCase();
+            cell.classList.add('status'); // common class for bold
+
+            if (status === "completed") {
+                cell.classList.add('completed');
+            } else if (status === "pending") {
+                cell.classList.add('pending');
+            } else if (status === "cancelled") {
+                cell.classList.add('cancelled');
+            }
+        });
+    </script>
+
+</body>
+</html>

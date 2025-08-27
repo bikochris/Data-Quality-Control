@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maintenance Reports - Data Quality Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    .top-bar {
+      background: #4796d1;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      align-items: center;
+      background: white;
+    }
+    .logo img {
+      height: 80px;
+    }
+    .nav {
+      background: #008000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+    }
+    .nav a {
+      color: white;
+      margin: 0 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+    .content {
+      padding: 40px;
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-left: 6px solid #008000;
+    }
+    h1 {
+      color: #008000;
+      margin-bottom: 20px;
+    }
+    .qc-icon {
+      float: right;
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+    .report-section {
+      margin-top: 30px;
+    }
+    .report-box {
+      background: #f0f8f5;
+      padding: 20px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      border-left: 5px solid #008000;
+    }
+    .report-box h3 {
+      margin-top: 0;
+    }
+    .report-box a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #006400;
+      font-weight: bold;
+      text-decoration: none;
+      margin-right: 15px;
+    }
+    .report-box a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #008000;
+      color: white;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div><strong>Data Quality Control — Maintenance Reports</strong></div>
+    </div>
+
+   <div class="header">
+    <div class="logo">
+      <img src="/Dashboard/Rwanda.png" alt="Rwanda Logo">
+    </div>
+    <div>
+      <img src="/Dashboard/meteo_logo.jpeg" alt="Meteo Rwanda Logo">
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="Maintenance_Reports.html">Maintenance Reports</a>
+  </div>
+
+  <div class="content">
+    <h1>Maintenance Reports
+      <img src="/Maintenance/maintenance.jpeg" alt="QC Icon" class="qc-icon">
+    </h1>
+
+    <p>This page contains monthly maintenance summaries from <strong>July 2025 to June 2026</strong> for stations monitored by Meteo Rwanda. Each report includes information on performed maintenance, identified issues, and recommendations.</p>
+
+    <div class="report-section">
+      <!-- Monthly Report Boxes -->
+      <!-- Repeat this structure for each month -->
+
+      <!-- Example Box -->
+      <div class="report-box">
+        <h3>July 2025 Maintenance Summary</h3>
+        <p>Status: <strong> Not Done</strong></p>
+        <a href="files/July2025_Maintenance_Report.xlsx" download>📥 Excel</a>
+        <a href="files/July2025_Maintenance_Report.pdf" download>📄 PDF</a>
+      </div>
+
+
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Rwanda Meteorology Agency — Maintenance Report Dashboard
+  </footer>
+
+</body>
+</html>

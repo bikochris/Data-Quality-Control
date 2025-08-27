@@ -1,0 +1,137 @@
+ID,Name,Latitude,Longitute,Elevation,Province,District,Sector
+10201500, Rubungo RAB ,-1.92,30.16,1450,Kigali ,Gasabo ,Bumbogo 
+10202200, Kabuye SW ,-1.89055556,30.07111111,1400,Kigali ,Gasabo ,Jabana 
+10105200, Butamwa ,-2.01666667,30.03333333,1400,Kigali ,Nyarugenge ,Mageregere 
+40510200, Mulindi ,-1.48,30.05,2100,Northern ,Gicumbi ,Kaniga 
+40510300, Nyamiyaga (Kabeza) ,-1.43,30.05,2100,Northern ,Gicumbi ,Nyamiyaga 
+40501300, Rwesero ,-1.8,30.16,1500,Northern ,Gicumbi ,Bukure 
+40114700, Rukozo ,-1.62194,29.94833,1856,Northern ,Rulindo ,Rukozo 
+40109500, Rutongo ,-1.81,30.05,1780,Northern ,Rulindo ,Rukozo 
+40105200, Cyinzuzi ,-1.76,30,1950,Northern ,Rulindo ,Cyinzuzi 
+40111200, Mugambazi ,-1.8,30.05,1800,Northern ,Rulindo ,Murambi 
+40115700, Rusiga ,-1.61,29.94778,2110,Northern ,Rulindo ,Rusiga 
+40402700, Butaro ,-1.41,29.83,1969,Northern ,Burera ,Butaro 
+40409500, Kinoni ,-1.43,29.71,1904,Northern ,Burera ,Kinoni 
+40409200, Ntaruka ,-1.46,29.75,1765,Northern ,Burera ,Kinoni 
+40408200, Kagogo ,-1.55,29.76,1866,Northern ,Burera ,Kagogo 
+40415200, Ruhunde ,-1.6,29.93,2235,Northern ,Burera ,Ruhunde 
+40315700, Shingiro ,-1.5,29.5,2125,Northern ,Musanze ,Shingiro 
+40312700, Nyange-kabeza ,-1.46,29.51,2198,Northern ,Musanze ,Nyange 
+40307200, Kinigi ,-1.440277778,29.59419444,2267,Northern ,Musanze ,Kinigi 
+40301500, Remera ,-1.53,29.75,1900,Northern ,Musanze ,Remera 
+40216500, Nemba Paroisse ,-1.6,29.78,1686,Northern ,Gakenke ,Nemba 
+40203500, Cyabingo ,-1.56,29.68,1870,Northern ,Gakenke ,Cyabingo 
+40211700, Minazi ,-1.73,29.78,2072,Northern ,Gakenke ,Minazi 
+40214700, Muyongwe ,-1.72,29.87,1573,Northern ,Gakenke ,Muyongwe 
+40206200, Janja ,-1.68,29.67,1714,Northern ,Gakenke ,Janja 
+40219200, Rushashi ,-1.727652,29.857256,1785,Northern ,Gakenke ,Rushashi 
+40217500, Ruli ,-1.81,29.81,2000,Northern ,Gakenke ,Ruli 
+20801700, Gacurabwenge ,-2.1,29.91,1634,Southern ,Kamonyi ,Gacurabwenge 
+20805200, Mugina ,-2.11,29.94,1517,Southern ,Kamonyi ,Mugina 
+20803500, Kayenzi ,-1.9,29.85,1800,Southern ,Kamonyi ,Kayenzi 
+20707700, Nyabinoni ,-1.76,29.68,1823,Southern ,Muhanga ,Nyabinoni 
+20711700, Rugendabari ,-1.95,29.66,1546,Southern ,Muhanga ,Rugendabari 
+20701500, Kivumu ,-2.05,29.8,1500,Southern ,Muhanga ,Cyeza 
+20703200, Kibangu ,-1.83,29.68,1595,Southern ,Muhanga ,Kibangu 
+20708200, Nyamabuye ,-2.08,29.78,1830,Southern ,Muhanga ,Nyamabuye 
+20607500, Mwendo ,-2.15528,29.68,1720,Southern ,Ruhango ,Mwendo 
+20601500, Gitwe ,-2.21,29.7,1750,Southern ,Ruhango ,Bweramana 
+20609500, Kigoma-Ruhango ,-2.23,29.8,1700,Southern ,Ruhango ,Ruhango 
+20604300, Kinazi ,-2.2,29.91,1515,Southern ,Ruhango ,Kinazi 
+20109700, Rurangazi ,-2.35,29.65,1512,Southern ,Nyanza ,Nyagisozi 
+20107500, Nyamiyaga Paroisse ,-2.46,29.86,1800,Southern ,Nyanza ,Muyira 
+20101700, Busasamana-Nyanza ,-2.35,29.76,1805,Southern ,Nyanza ,Busasamana 
+20403500, Karama(Gahororo) ,-2.6,29.64,1812,Southern ,Huye ,Karama 
+20404500, Kigoma-Huye ,-2.46,29.63,1704,Southern ,Huye ,Kigoma 
+20413500, Simbi ,-2.52,29.7,1700,Southern ,Huye ,Simbi 
+20401500, Nyakibanda(Grand s�minaire) ,-2.65,29.68,1750,Southern ,Huye ,Gishamvu 
+20411100, Rubona ,-2.46,29.76,1706,Southern ,Huye ,Rwaniro 
+20201500, Gikonko ,-2.48,29.86,1612,Southern ,Gisagara ,Gikonko 
+20201200, Cyili ,-2.48,29.88,1391,Southern ,Gisagara ,Musha 
+20209700, Mukindo ,-2.46,29.91,1542,Southern ,Gisagara ,Mukindo 
+20206500, Gakoma  ,-2.71,29.85,1450,Southern ,Gisagara ,Mamba 
+20213500, Save ,-2.55,29.76,1725,Southern ,Gisagara ,Save 
+20203200, Kansi ,-2.7,29.75,1670,Southern ,Gisagara ,Kansi 
+20205200, Kigembe ,-2.73,29.7,1700,Southern ,Gisagara ,Kigembe 
+20302500, Cyahinda ,-2.73,29.6,1871,Southern ,Nyaruguru ,Cyahinda 
+20301200, Runyombyi ,-2.78,29.51,2041,Southern ,Nyaruguru ,Ruramba 
+20303500, Kibeho ,-2.65,29.55,1894,Southern ,Nyaruguru ,Kibeho 
+20516500,  Mudasomwa Tare Sector ,-2.5,29.45,2200,Southern ,Nyamagabe ,Tare 
+20504700, Gatare ,-2.514158,29.48185,2198,Southern ,Nyamagabe ,Gatare 
+20501700, Buruhukiro ,-2.38,29.38,2284,Southern ,Nyamagabe ,Buruhukiro 
+20513500, Mushubi Paroisse ,-2.36,29.45,2040,Southern ,Nyamagabe ,Mushubi 
+20505500, Kaduha Sector ,-2.33,29.53,1886,Southern ,Nyamagabe ,Kaduha 
+20502200, Cyanika ku ishuri ,-2.43,29.6,1986,Southern ,Nyamagabe ,Cyanika 
+20503200, Kigeme ku ishuri ,-2.48,29.53,2124,Southern ,Nyamagabe ,Gasaka 
+20509200, Kitabi Tea ,-2.55,29.43,2262,Southern ,Nyamagabe ,Kitabi 
+50710200, Nyamata Paroisse ,-2.15,30.45,1428,Eastern ,Bugesera ,Nyamata 
+50713500, Ruhuha ,-2.35,30.01,1400,Eastern ,Bugesera ,Ruhuha 
+50713600, Juru ,-2.1,30.19,1472,Eastern ,Bugesera ,Juru 
+50103700, Gishali ,-1.913807,30.429607,1491,Eastern ,Rwamagana ,Gishali 
+50111700, Mwulire ,-1.97656,30.4046,1626,Eastern ,Rwamagana ,Mwulire 
+50113500, Nzige ,-2.02628,30.34012,1664,Eastern ,Rwamagana ,Nzige 
+50105200, Rwamagana ,-1.93,30.43,1531,Eastern ,Rwamagana ,Kigabiro 
+50109600, Musha ,-1.931578,30.332703,1653,Eastern ,Rwamagana ,Musha 
+50403700, Kabarondo ,-2.01056,30.5575,1675,Eastern ,Kayonza ,Kabarondo 
+50401700, Gahini  ,-1.847942,30.507509,1581,Eastern ,Kayonza ,Gahini 
+50407700, Mwiri ,-1.880582,30.576773,1671,Eastern ,Kayonza ,Mwiri 
+50407300, Mukarange ,-1.9,30.5,1581,Eastern ,Kayonza ,Mukarange 
+50412200, Rwinkwavu ,-1.972123,30.605003,1406,Eastern ,Kayonza ,Rwinkwavu 
+50412600, Ndego ,-2.014543,30.711527,1358,Eastern ,Kayonza ,Ndego 
+50406700, Murundi ,-1.704987,30.546247,1489,Eastern ,Kayonza ,Murundi 
+50307500, Kiziguro ,-1.63,30.28,1550,Eastern ,Gatsibo ,Kiziguro 
+50314700, Rwimbogo ,-1.63,30.44,1350,Eastern ,Gatsibo ,Rwimbogo 
+50314500, Gabiro ,-1.55,30.4,1472,Eastern ,Gatsibo ,Kageyo 
+50301500, Gasange ,-1.8,30.29,1750,Eastern ,Gatsibo ,Gasange 
+50311200, Nyagahanga ,-1.61,30.2,1700,Eastern ,Gatsibo ,Nyagihanga 
+50310500, Ngarama ,-1.58,30.23,1500,Eastern ,Gatsibo ,Ngarama 
+50304200, Kabarore ,-1.62,30.38,1496,Eastern ,Gatsibo ,Kabarore 
+50301600, Muhura ,-1.52,30.23,1946,Eastern ,Gatsibo ,Muhura 
+50202500, Nyakiga-Karama ,-1.218333,30.3,1456,Eastern ,Nyagatare ,Karama 
+50212700, Rwempasha ,-1.36,30.15,1527,Eastern ,Nyagatare ,Rwempasha 
+50212800, Karangazi ,-1.428889,30.389444,1442,Eastern ,Nyagatare ,Karangazi 
+50212900, Kagitumba Garden-Fresh ,-1.63,30.56,1955,Eastern ,Nyagatare ,Kagitumba 
+50201200, Gatunda ,-1.36,30.21,1505,Eastern ,Nyagatare ,Gatunda 
+50206500, Kagitumba ,-1.05,30.45,1280,Eastern ,Nyagatare ,Kagitumba 
+50608700, Mutenderi ,-2.26,30.48,1470,Eastern ,Ngoma ,Mutenderi 
+50613500, Sake ,-2.225327,30.390287,1409,Eastern ,Ngoma ,Sake 
+50614200, Zaza ,-2.155898,30.432512,1481,Eastern ,Ngoma ,Zaza 
+50602300, Jarama  ,-2.277985,30.379137,1428,Eastern ,Ngoma ,Jarama 
+50505300, Kirehe ,-2.26,30.66,1640,Eastern ,Kirehe ,Kirehe 
+50508700, Musaza ,-2.3314,30.629154,1789,Eastern ,Kirehe ,Musaza 
+50511700, Nyamugali ,-2.285803,30.749577,1405,Eastern ,Kirehe ,Nyamugari 
+50512500, Nyarubuye ,-2.18378,30.753191,1733,Eastern ,Kirehe ,Nyarubuye 
+50507200, Mpanga ,-2.16765,30.798712,1722,Eastern ,Kirehe ,Mpanga 
+50501200, Gahara ,-2.334903,30.504042,1540,Eastern ,Kirehe ,Gahara 
+30503200, Muramba ,-1.56,29.68,1870,Western ,Ngororero ,Matyazo 
+30502500, Gatumba ,-1.9475,29.63306,1536,Western ,Ngororero ,Gatumba 
+30504500, Kabaya ,-1.770633333,30.55293333,2413,Western ,Ngororero ,Kabaya 
+30508700, Muhanda/Rubaya ,-1.94778,29.63194,2224,Western ,Ngororero ,Muhanda 
+30512500, Nyange ,-2.05,29.58,1771,Western ,Ngororero ,Nyange 
+30513200, Sovu ,-1.91,29.52,2319,Western ,Ngororero ,Sovu 
+30310500, Nyundo ,-1.7,29.31,1789,Western ,Rubavu ,Nyundo 
+30303700, Ryabizige ,-1.62,29.31,1841,Western ,Rubavu ,Cyanzarwe 
+30302500, Busasamana ,-1.604867,29.345142,2124,Western ,Rubavu ,Busasamana 
+30305500, Kanama ,-1.7,29.35,1900,Western ,Rubavu ,Kanama 
+30110600, Rugabano ,-2.056472222,29.48019444,2199,Western ,Karongi ,Rugabano 
+30103600, Gishyita ,-2.155166667,29.29194444,1703,Western ,Karongi ,Gishyita 
+30113600, Rugabano Tea  ,-2.09678,29.47938,1961,Western ,Karongi ,Rugabano 
+30113400, Twumba ,-2.241972,29.36242,2344,Western ,Karongi ,Twumba 
+30210600, Mushubati ,-2.016466667,29.3977,1705,Western ,Rutsiro ,Mushubati 
+30202300, Gihango ,-1.95,29.38365,2013,Western ,Rutsiro ,Gihango 
+30201700, Boneza ,-1.903333,29.30694,1756,Western ,Rutsiro ,Boneza 
+30202500, Murunda Paroisse ,-1.916667,29.38333,1838,Western ,Rutsiro ,Murunda 
+30410700, Rugera ,-1.61,29.61,1444,Western ,Nyabihu ,Rugera 
+30407500, Rwankeri ,-1.58,29.51,2250,Western ,Nyabihu ,Rurembo 
+30401300, Bigogwe ,-1.626994,29.423738,2393,Western ,Nyabihu ,Bigogwe 
+30705200, Nyamasheke ,-2.34,29.08,1527,Western ,Nyamasheke ,Kagano 
+30701500, Ntendezi ,-2.446222,29.04478,1598,Western ,Nyamasheke ,Ruharambuga 
+30703300, Cyato ,-2.407027778,29.20116667,1767,Western ,Nyamasheke ,Cyato 
+30709700, Kirimbi ,-2.256861111,29.22427778,1703,Western ,Nyamasheke ,Karambi 
+30706700, Kanjongo ,-2.318444444,29.13669444,1533,Western ,Nyamasheke ,Kanjongo 
+30715500, Shangi ,-2.409638889,29.00594444,1717,Western ,Nyamasheke ,Shangi 
+30612700, Nkanka ,-2.418833333,28.93213889,1711,Western ,Rusizi ,Nkanka 
+30615500, Nyakabuye ,-2.563722,29.02669444,1274,Western ,Rusizi ,Nyakabuye 
+30611700, Mururu ,-2.537361111,28.89019444,1642,Western ,Rusizi ,Mururu 
+30601200, Bugarama ,-2.69138889,29.00638889,979,Western ,Rusizi ,Bugarama 
+30604500, Mibirizi                       ,-2.573805556,28.95641667,1834,Western ,Rusizi ,Butare 

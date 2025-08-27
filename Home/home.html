@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Station Types - Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+    }
+    header {
+      background-color: #008000;
+      padding: 15px;
+      color: white;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-left: 5px solid #008000;
+    }
+    h2 {
+      color: #008000;
+      margin-top: 30px;
+    }
+    h2 a {
+      text-decoration: none;
+      color: #008000;
+    }
+    h2 a:hover {
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #008000;
+      color: white;
+      margin-top: 50px;
+    }
+    /* Data Section */
+    .data-section {
+      margin-top: 40px;
+      padding: 20px;
+      border: 2px dashed #008000;
+      background: #f1fdf1;
+    }
+    .data-section h3 {
+      color: #008000;
+      margin-bottom: 15px;
+    }
+    .data-section ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .data-section li {
+      margin: 8px 0;
+    }
+    .data-section a {
+      color: #006400;
+      text-decoration: none;
+    }
+    .data-section a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Station Types Overview</h1>
+  </header>
+
+  <div class="container">
+    <p>Below is the list of station types and corresponding stations monitored by Meteo Rwanda.</p>
+
+    <h2><a href="files/automatic_weather_stations.xlsx" download>1. Automatic Weather Stations</a></h2>
+    <h2><a href="files/automatic_rain_gauges.xlsx" download>2. Automatic Rain Gauges</a></h2>
+    <h2><a href="/Home/Pricipal Stations.csv" download>3. Principal Stations</a></h2>
+    <h2><a href="/Home/Voluntaire.csv" download>4. Volunteering Stations</a></h2>
+
+    <!-- Data Section (Manually Added Files) -->
+    <div class="data-section">
+      <h3>Enact Data</h3>
+      
+      <h3>Enactdata_StationLevel_DailyData</h3>
+      <ul>
+        <li><a href="/Home/Data/Daily/Tmax.csv" download>🌡️ Maximum Temperature</a></li>
+       <li><a href="/Home/Data/Daily/Tmin.csv" download>❄️ Minimum Temperature</a></li>
+        <li><a href="/Home/Data/Daily/Rainfall.csv" download>☔ Rainfall</a></li>
+      </ul>
+      <h3>Enactdata_StationLevel_MonthlyData</h3>
+      <ul>
+         <li><a href="/Home/Data/Monthly/Tmax_Monthly.csv" download>🌡️ Maximum Temperature</a></li>
+       <li><a href="/Home/Data/Monthly/Tmin_Monthly.csv" download>❄️ Minimum Temperature</a></li>
+        <li><a href="/Home/Data/Monthly/Rainfall_Monthly.csv" download>☔ Rainfall</a></li>
+      </ul>
+      </ul>
+            <h3>Enactdata_StationLevel_YearlyData</h3>
+      <ul>
+ <li><a href="/Home/Data/Yearly/Tmax_Yearly.csv" download>🌡️ Maximum Temperature</a></li>
+       <li><a href="/Home/Data/Yearly/Tmin_Yearly.csv" download>❄️ Minimum Temperature</a></li>
+        <li><a href="/Home/Data/Yearly/Rainfall_Yearly.csv" download>☔ Rainfall</a></li>
+      </ul>
+      </ul>
+      <h3>Dekads</h3>
+      <ul>
+        <li><a href="/Home/Data/Dekads/dekad2020.xlsx" download> 2020</a></li>
+        <li><a href="/Home/Data/Dekads/dekad2021.xlsx" download>2021</a></li>
+        <li><a href="/Home/Data/Dekads/dekad2022.xlsx" download>2022</a></li>
+        <li><a href="/Home/Data/Dekads/dekad2023.xlsx" download>2023</a></li>
+        <li><a href="/Home/Data/Dekads/dekad2024.xlsx" download>2024</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Rwanda Meteorology Agency — Station Types Summary
+  </footer>
+
+</body>
+</html>
