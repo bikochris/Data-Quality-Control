@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Data Request Reports - Meteo Rwanda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -41,9 +42,7 @@
       font-weight: bold;
       font-size: 16px;
     }
-    .nav a:hover {
-      text-decoration: underline;
-    }
+    .nav a:hover { text-decoration: underline; }
     .content {
       padding: 40px;
       max-width: 1000px;
@@ -52,19 +51,9 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border-left: 6px solid #008000;
     }
-    h1 {
-      color: #008000;
-      margin-bottom: 20px;
-    }
-    .icon {
-      float: right;
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
-    .report-section {
-      margin-top: 30px;
-    }
+    h1 { color: #008000; margin-bottom: 20px; }
+    .icon { float: right; width: 80px; height: 80px; object-fit: contain; }
+    .report-section { margin-top: 30px; }
     .report-box {
       background: #eafaf1;
       padding: 20px;
@@ -72,9 +61,7 @@
       margin-bottom: 20px;
       border-left: 5px solid #008000;
     }
-    .report-box h3 {
-      margin-top: 0;
-    }
+    .report-box h3 { margin-top: 0; }
     .report-box a {
       display: inline-block;
       margin-top: 10px;
@@ -82,9 +69,7 @@
       font-weight: bold;
       text-decoration: none;
     }
-    .report-box a:hover {
-      text-decoration: underline;
-    }
+    .report-box a:hover { text-decoration: underline; }
     footer {
       text-align: center;
       padding: 10px;
@@ -92,15 +77,30 @@
       color: white;
       margin-top: 50px;
     }
+    .chart-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-left: 6px solid #4796d1;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 16px 16px 24px 16px;
+      margin: 24px 0 8px 0;
+    }
+    .chart-title { margin: 0 0 6px 0; color: #1f2937; font-size: 18px; font-weight: 700; }
+    .chart-subtitle { margin: 0 0 12px 0; color: #4b5563; font-size: 14px; }
+    .note { font-size: 12px; color: #374151; margin-top: 8px; }
+    .muted { color: #6b7280; }
+    .total-box { margin-top: 20px; font-size: 16px; font-weight: bold; color: #008000; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
   <div class="top-bar">
     <div><strong>Data Request Reports — Meteo Rwanda</strong></div>
-     </div>
+  </div>
 
-   <div class="header">
+  <div class="header">
     <div class="logo">
       <img src="../Dashboard/Rwanda.png" alt="Rwanda Logo">
     </div>
@@ -110,9 +110,7 @@
   </div>
 
   <div class="nav">
-
     <a href="data_request_reports.html">Data Request Report</a>
-
   </div>
 
   <div class="content">
@@ -122,21 +120,26 @@
 
     <p>This page contains monthly, quarterly, and annual data request reports from <strong>July 2025 to June 2026</strong>.</p>
 
-    <div class="report-section">
+    <!-- Chart Section -->
+    <section class="chart-card" aria-label="Monthly data requests chart">
+      <h2 class="chart-title">Monthly Data Requests</h2>
+      <canvas id="dataRequestChart" height="90"></canvas>
+      
+      <div class="total-box" id="totalRequests">Total Data Requests: 0</div>
+    </section>
 
-      <!-- Monthly -->
+    <div class="report-section">
       <div class="report-box">
-        <h3>July 2025: 25 Data  Requests</h3>
+        <h3>July 2025: 25 Data Requests</h3>
         <p>Status: <strong> Done</strong></p>
         <a href="DATA REQUEST REPORT-JULY_2025.docx" download>📥 Download Report</a>
       </div>
-<div class="report-box">
-        <h3>August 2025: 15 Data  Requests</h3>
+
+      <div class="report-box">
+        <h3>August 2025: 15 Data Requests</h3>
         <p>Status: <strong> Done</strong></p>
         <a href="DATA REQUEST REPORT-AUGUST_2025.docx" download>📥 Download Report</a>
       </div>
-      
-
     </div>
   </div>
 
@@ -144,5 +147,43 @@
     &copy; 2025 Rwanda Meteorology Agency — Data Request Reports
   </footer>
 
+  <script>
+    const months = ['July 2025','August 2025','September 2025','October 2025',
+      'November 2025','December 2025','January 2026','February 2026',
+      'March 2026','April 2026','May 2026','June 2026'];
+
+    // Enter number of requests for each month (null if unknown)
+    const requests = [25, 15, null, null, null, null, null, null, null, null, null, null];
+
+    const ctx = document.getElementById('dataRequestChart').getContext('2d');
+
+    const dataRequestChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Number of Data Requests',
+          data: requests,
+          backgroundColor: 'rgba(0,128,0,0.5)',
+          borderColor: '#008000',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 5 } }
+        }
+      }
+    });
+
+    // Calculate and display total
+    function calculateTotal() {
+      const total = requests.reduce((sum, val) => sum + (val || 0), 0);
+      document.getElementById('totalRequests').textContent = 'Total Data Requests: ' + total;
+    }
+
+    calculateTotal();
+  </script>
 </body>
 </html>

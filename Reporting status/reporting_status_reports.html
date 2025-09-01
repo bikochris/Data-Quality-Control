@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Reporting Status Reports - Meteo Rwanda</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -62,9 +63,7 @@
       height: 80px;
       object-fit: contain;
     }
-    .report-section {
-      margin-top: 30px;
-    }
+    .report-section { margin-top: 30px; }
     .report-box {
       background: #eafaf1;
       padding: 20px;
@@ -72,9 +71,7 @@
       margin-bottom: 20px;
       border-left: 5px solid #008000;
     }
-    .report-box h3 {
-      margin-top: 0;
-    }
+    .report-box h3 { margin-top: 0; }
     .report-links a {
       display: inline-block;
       margin-right: 15px;
@@ -82,9 +79,7 @@
       font-weight: bold;
       text-decoration: none;
     }
-    .report-links a:hover {
-      text-decoration: underline;
-    }
+    .report-links a:hover { text-decoration: underline; }
     footer {
       text-align: center;
       padding: 10px;
@@ -92,16 +87,43 @@
       color: white;
       margin-top: 50px;
     }
+    .chart-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-left: 6px solid #4796d1;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 16px 16px 24px 16px;
+      margin: 24px 0 8px 0;
+    }
+    .chart-title {
+      margin: 0 0 6px 0;
+      color: #1f2937;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .chart-subtitle {
+      margin: 0 0 12px 0;
+      color: #4b5563;
+      font-size: 14px;
+    }
+    .note {
+      font-size: 12px;
+      color: #374151;
+      margin-top: 8px;
+    }
+    .muted { color: #6b7280; }
   </style>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
   <div class="top-bar">
     <div><strong>Reporting Status Reports — Meteo Rwanda</strong></div>
-    
   </div>
 
-   <div class="header">
+  <div class="header">
     <div class="logo">
       <img src="../Dashboard/Rwanda.png" alt="Rwanda Logo">
     </div>
@@ -109,32 +131,46 @@
       <img src="../Dashboard/meteo_logo.jpeg" alt="Meteo Rwanda Logo">
     </div>
   </div>
+
   <div class="nav">
-
     <a href="reporting_status_reports.html">Reporting Status Reports</a>
-
   </div>
 
   <div class="content">
     <h1>Reporting Status Reports
-      <img src="Reporting status/reporting.jpeg" alt="Reporting Icon" class="icon">
+      <img src="reporting.jpeg" alt="Reporting Icon" class="icon">
     </h1>
 
-    <p>This page contains monthly, quarterly, and annual reporting status reports from <strong>July 2025 to June 2026</strong>.</p>
+    <p>
+      This page contains monthly, quarterly, and annual reporting status reports from <strong>July 2025 to June 2026</strong>.
+    </p>
+
+    <!-- Chart Section -->
+    <section class="chart-card" aria-label="Monthly reporting percentage chart">
+      <h2 class="chart-title">Monthly Reporting Percentage (AWS & ARG)</h2>
+      <p class="chart-subtitle muted">July 2025 – June 2026</p>
+      <canvas id="reportingChart" height="90"></canvas>
+     
+    </section>
 
     <div class="report-section">
-
-      <!-- Example month with both PDF and Excel -->
       <div class="report-box">
         <h3>July 2025</h3>
         <div class="report-links">
           <p>Status: <strong>Completed.</strong></p>
           <a href="July/JULY.xlsm" download>📥 Excel</a>
-          <a href="/July/REPORTING STATUS OF AWS & ARG BY JULY 2025.pdf" download>📄 PDF</a>
+          <a href="July/REPORTING STATUS OF AWS & ARG BY JULY 2025.pdf" download>📄 PDF</a>
         </div>
       </div>
 
-     
+      <div class="report-box">
+        <h3>August 2025</h3>
+        <div class="report-links">
+          <p>Status: <strong>Completed.</strong></p>
+          <a href="August/AUGUST.xlsm" download>📥 Excel</a>
+          <a href="August/REPORTING STATUS OF AWS & ARG BY AUGUST 2025.pdf" download>📄 PDF</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -142,5 +178,60 @@
     &copy; 2025 Rwanda Meteorology Agency — Reporting Status Reports
   </footer>
 
+  <script>
+    // Define months July 2025 → June 2026
+    const months = [
+      "July 2025", "August 2025", "September 2025", "October 2025",
+      "November 2025", "December 2025", "January 2026", "February 2026",
+      "March 2026", "April 2026", "May 2026", "June 2026"
+    ];
+
+    // ===> ENTER your monthly percentages here (set to null if unknown)
+    const percentages = [
+      71.1,     // July 2025
+      67.95,    // August 2025
+      null,     // September 2025
+      null,     // October 2025
+      null,     // November 2025
+      null,     // December 2025
+      null,     // January 2026
+      null,     // February 2026
+      null,     // March 2026
+      null,     // April 2026
+      null,     // May 2026
+      null      // June 2026
+    ];
+
+    const ctx = document.getElementById('reportingChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Reporting %',
+          data: percentages,
+          borderColor: '#4796d1',
+          backgroundColor: 'rgba(71, 150, 209, 0.2)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: {
+              callback: (value) => value + "%"
+            }
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
