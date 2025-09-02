@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Station Types - Home</title>
   <style>
+    /* [Previous CSS remains unchanged] */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -97,7 +98,7 @@
       width: 100%;
       margin-top: 10px;
       border-collapse: collapse;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .aws-info th, .aws-info td, .arg-info th, .arg-info td {
       border: 1px solid #008000;
@@ -113,6 +114,8 @@
       padding: 10px;
     }
   </style>
+  <!-- Include Papa Parse CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -249,225 +252,47 @@
   </footer>
 
   <script>
-    // AWS station data (from initial input with examples)
-      // AWS station data (93 stations)
-    const awsStations = [
-      { name: "Gihinga", province: "East", district: "Bugesera", sensors: [{ type: "Temperature", serialNumber: "TMP123" }, { type: "Rainfall", serialNumber: "RF456" }], activities: [{ date: "2025-09-02", activity: "Routine Maintenance" }, { date: "2025-08-15", activity: "Sensor Calibration" }] },
-      { name: "Mayange", province: "East", district: "Bugesera", sensors: [{ type: "Humidity", serialNumber: "HUM789" }, { type: "Wind Speed", serialNumber: "WS101" }], activities: [{ date: "2025-09-01", activity: "Data Collection" }, { date: "2025-08-20", activity: "System Check" }] },
-      { name: "Rweru", province: "East", district: "Bugesera", sensors: [], activities: [] },
-      { name: "Ruhuha", province: "East", district: "Bugesera", sensors: [], activities: [] },
-      { name: "Gabiro", province: "East", district: "Gatsibo", sensors: [], activities: [] },
-      { name: "Kabarore", province: "East", district: "Gatsibo", sensors: [], activities: [] },
-      { name: "AKAGERA RWISIRABO", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Kawangire", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Mukarange", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Ndego", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Murama", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Rwinkwavu", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "RWIMISHANYA", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Kirehe", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Mahama", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Nasho_Mpanga", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "RUSUMO POWER PLANT", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "COCAMUSAZA", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "AKAGERA NYUNGWE", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Kenjobe", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "MATIMBA", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Katabagemu", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Nyagatare", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Rwamagana", province: "East", district: "Rwamagana", sensors: [], activities: [] },
-      { name: "Bicumbi", province: "East", district: "Rwamagana", sensors: [], activities: [] },
-      { name: "Zaza", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "Kazo", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "GAHORORO", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "GIKOMERO", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "RUSORORO", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "JALI", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "NDUBA", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "RUBUNGO", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "GITEGA", province: "Kigali", district: "Nyarugenge", sensors: [], activities: [] },
-      { name: "KIVUGIZA", province: "Kigali", district: "Nyarugenge", sensors: [], activities: [] },
-      { name: "GATENGA", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "KIGALI_Airport", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Gahanga", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Rubirizi", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Masaka", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Bungwe", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Cyanika Border Market", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Cyeru", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Ntaruka", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Kageyo", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Rusasa", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Rushashi", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Cyumba", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Cyabingo", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Gakenke District", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Minazi", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "COKA", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Bwisige", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "Cyumba", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "Mulindi Tea", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "Muko", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "BYUMBA", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "Nyange", province: "North", district: "Musanze", sensors: [], activities: [] },
-      { name: "RUHENGERI", province: "North", district: "Musanze", sensors: [], activities: [] },
-      { name: "kinigi", province: "North", district: "Musanze", sensors: [], activities: [] },
-      { name: "Nyirangarama", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Cyinzuzi", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Kinihira", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Rukozo", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Rusiga", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "MUYANZA", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Mamba", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Mukindo", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Save", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Gisagara (District)", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Muganza", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Butare", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Rubona", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Kagoma / Huye", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Rugwiza", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Simbi", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Tumba", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Bakokwe", province: "South", district: "Muhanga", sensors: [], activities: [] },
-      { name: "Nyamabuye", province: "South", district: "Muhanga", sensors: [], activities: [] },
-      { name: "Kivumu Parish", province: "South", district: "Muhanga", sensors: [], activities: [] },
-      { name: "Kayenzi", province: "South", district: "Kamonyi", sensors: [], activities: [] },
-      { name: "Gacurabwenge", province: "North", district: "Kamonyi", sensors: [], activities: [] },
-      { name: "Gikongoro", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Kaduha", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Kibirizi", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Kitabi", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Tare", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "MUSHUBI", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Nyabimata", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Munini", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Cyahinda", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Ngerera", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Kibeho", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Muganza Parish", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "RUSENGE", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "UNILIVER", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Busasamana", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Rwabicuma", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Muyira", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Ntyazo", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Byimana", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Bweramana", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Mwerndo", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Ruhango South", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Gishyita", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Rubengera", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Rwankuba", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "RUGABANO", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Bwishyura", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Murambi", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Murundi West", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Kavumu", province: "West", district: "Ngororero", sensors: [], activities: [] },
-      { name: "Ngororero", province: "West", district: "Ngororero", sensors: [], activities: [] },
-      { name: "Muhororo", province: "West", district: "Ngororero", sensors: [], activities: [] },
-      { name: "Kabaya", province: "West", district: "Ngororero", sensors: [], activities: [] },
-      { name: "Wisumo", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Kanjong", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Khangi Parish", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Mukura", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "GATARE", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Nyamasheke", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Muringa", province: "West", district: "Nyabihu", sensors: [], activities: [] },
-      { name: "Kibisabo", province: "West", district: "Nyabihu", sensors: [], activities: [] },
-      { name: "Rugera", province: "West", district: "Nyabihu", sensors: [], activities: [] },
-      { name: "Tamira", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Busasamana", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Cyanazwe", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Kanzenze", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Rugerero", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Bweyeye", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Kamembe", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "NYABITIMBO", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Bugarama", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Shagasha", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Nkanka", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Nyakarengo", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "MWITO", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Macuba", province: "West", district: "Rutsiro", sensors: [], activities: [] },
-      { name: "Ruhango Sector", province: "West", district: "Rutsiro", sensors: [], activities: [] },
-      { name: "Kamuhi (Sector)", province: "West", district: "Rutsiro", sensors: [], activities: [] },
-      { name: "Mushubati", province: "West", district: "Rutsiro", sensors: [], activities: [] }
-    ];
-    // ARG station data (from uploaded image with examples)
-        // ARG station data (70 stations)
-    const argStations = [
-      { name: "Gasange", province: "East", district: "Gatsibo", sensors: [{ type: "Rainfall", serialNumber: "RF001" }, { type: "Pressure", serialNumber: "PR002" }], activities: [{ date: "2025-09-02", activity: "Gauge Cleaning" }, { date: "2025-08-18", activity: "Data Upload" }] },
-      { name: "Kiziguro", province: "East", district: "Gatsibo", sensors: [{ type: "Rainfall", serialNumber: "RF003" }, { type: "Wind Speed", serialNumber: "WS004" }], activities: [{ date: "2025-09-01", activity: "Inspection" }, { date: "2025-08-17", activity: "Repair" }] },
-      { name: "Rwimbogo", province: "Kigali", district: "Gatsibo", sensors: [], activities: [] },
-      { name: "Gahini", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Kabaronondo", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Murundi East", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Mwiri", province: "East", district: "Kayonza", sensors: [], activities: [] },
-      { name: "Gahara", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Musaza", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Nyamugali", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Nyakibuye Parish", province: "East", district: "Kirehe", sensors: [], activities: [] },
-      { name: "Mata", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "Mutenderi", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "Sake", province: "East", district: "Ngoma", sensors: [], activities: [] },
-      { name: "Kagitumba", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Rwempesha", province: "East", district: "Nyagatare", sensors: [], activities: [] },
-      { name: "Musha", province: "East", district: "Rwamagana", sensors: [], activities: [] },
-      { name: "Nzige", province: "East", district: "Rwamagana", sensors: [], activities: [] },
-      { name: "Jali", province: "Kigali", district: "Gasabo", sensors: [], activities: [] },
-      { name: "Gahanga", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Rubirizi", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Masaka", province: "Kigali", district: "Kicukiro", sensors: [], activities: [] },
-      { name: "Kigali Sector", province: "Kigali", district: "Nyarugenge", sensors: [], activities: [] },
-      { name: "Rugunga", province: "Kigali", district: "Nyarugenge", sensors: [], activities: [] },
-      { name: "Kageyo", province: "North", district: "Burera", sensors: [], activities: [] },
-      { name: "Cyumba", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Cyabingo", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Gakenke District", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Minazi", province: "North", district: "Gakenke", sensors: [], activities: [] },
-      { name: "Bwisige", province: "North", district: "Gicumbi", sensors: [], activities: [] },
-      { name: "Nyange", province: "North", district: "Musanze", sensors: [], activities: [] },
-      { name: "Cyinzuzi", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Kinihira", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Rukozo", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Rusiga", province: "North", district: "Rulindo", sensors: [], activities: [] },
-      { name: "Mukindo", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Save", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Gisagara (District)", province: "South", district: "Gisagara", sensors: [], activities: [] },
-      { name: "Kagoma / Huye", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Rugwiza", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Simbi", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Tumba", province: "South", district: "Huye", sensors: [], activities: [] },
-      { name: "Kivumu Parish", province: "South", district: "Muhanga", sensors: [], activities: [] },
-      { name: "Kitabi", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Tare", province: "South", district: "Nyamagabe", sensors: [], activities: [] },
-      { name: "Muyira", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Ntyazo", province: "South", district: "Nyanza", sensors: [], activities: [] },
-      { name: "Cyahinda", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Ngerera", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Kibeho", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Muganza Parish", province: "South", district: "Nyaruguru", sensors: [], activities: [] },
-      { name: "Bweramana", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Mwerndo", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Ruhango South", province: "South", district: "Ruhango", sensors: [], activities: [] },
-      { name: "Bwishyura", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Murambi", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Murundi West", province: "West", district: "Karongi", sensors: [], activities: [] },
-      { name: "Kabaya", province: "West", district: "Ngororero", sensors: [], activities: [] },
-      { name: "Rugera", province: "West", district: "Nyabihu", sensors: [], activities: [] },
-      { name: "Khangi Parish", province: "West", district: "Nyamasheke", sensors: [], activities: [] },
-      { name: "Busasamana", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Cyanazwe", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Kanzenze", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Rugerero", province: "West", district: "Rubavu", sensors: [], activities: [] },
-      { name: "Shagasha", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Nkanka", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Nyakarengo", province: "West", district: "Rusizi", sensors: [], activities: [] },
-      { name: "Ruhango Sector", province: "West", district: "Rutsiro", sensors: [], activities: [] },
-      { name: "Kamuhi (Sector)", province: "West", district: "Rutsiro", sensors: [], activities: [] },
-      { name: "Mushubati", province: "West", district: "Rutsiro", sensors: [], activities: [] }
-    ];
+    // Initialize empty arrays for AWS and ARG stations
+    let awsStations = [];
+    let argStations = [];
+
+    // Load and parse AWS CSV file
+    async function loadAWSStationsFromCSV() {
+      try {
+        const response = await fetch('aws_stations.csv');
+        const text = await response.text();
+        const data = Papa.parse(text, { header: true }).data;
+        awsStations = data.map(row => ({
+          name: row.name,
+          province: row.province,
+          district: row.district,
+          sensors: JSON.parse(row.sensors || '[]'),
+          activities: JSON.parse(row.activities || '[]')
+        }));
+        populateAWSProvinces();
+      } catch (error) {
+        console.error('Error loading aws_stations.csv:', error);
+      }
+    }
+
+    // Load and parse ARG CSV file
+    async function loadARGStationsFromCSV() {
+      try {
+        const response = await fetch('arg_stations.csv');
+        const text = await response.text();
+        const data = Papa.parse(text, { header: true }).data;
+        argStations = data.map(row => ({
+          name: row.name,
+          province: row.province,
+          district: row.district,
+          sensors: JSON.parse(row.sensors || '[]'),
+          activities: JSON.parse(row.activities || '[]')
+        }));
+        populateARGProvinces();
+      } catch (error) {
+        console.error('Error loading arg_stations.csv:', error);
+      }
+    }
 
     // Populate AWS provinces
     function populateAWSProvinces() {
@@ -676,9 +501,9 @@
     }
 
     // Initialize on page load
-    window.onload = function() {
-      populateAWSProvinces();
-      populateARGProvinces();
+    window.onload = async function() {
+      await loadAWSStationsFromCSV();
+      await loadARGStationsFromCSV();
     };
   </script>
 </body>
