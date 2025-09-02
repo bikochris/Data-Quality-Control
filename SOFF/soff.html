@@ -93,6 +93,25 @@
       color: white;
       margin-top: 50px;
     }
+
+    /* SOFF Monitoring Table */
+    .soff-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .soff-table th, .soff-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .soff-table th {
+      background: #008000;
+      color: white;
+    }
+    .soff-table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
   </style>
 </head>
 <body>
@@ -116,16 +135,51 @@
 
   <div class="content">
     <h1>SOFF M&E
-      <img src="maintenance.jpeg" alt="QC Icon" class="qc-icon">
+      <img src="Soff.PNG" alt="QC Icon" class="qc-icon">
     </h1>
 
-    <p>This page contains the monthly monitoring of  <strong>SOFF PROECT</strong> of the Automatic weather stations that was installed at KAZO, NYAGATARE and RUBENGERA sites</p>
+    <p>This page contains the monthly monitoring of <strong>SOFF PROJECT</strong> of the Automatic weather stations that was installed at KAZO, NYAGATARE and RUBENGERA sites.</p>
+
+    <!-- Monitoring Table -->
+    <table class="soff-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Station</th>
+          <th>Action Performed</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-05-27</td>
+          <td>KAZO</td>
+          <td>Satation upgrade</td>
+        </tr>
+        <tr>
+          <td>2025-05-28</td>
+          <td>NYAGATARE</td>
+          <td>Satation upgrade</td>
+        </tr>
+        <tr>
+          <td>2025-05-30</td>
+          <td>RUBENGERA</td>
+          <td>Satation upgrade</td>
+        </tr>
+         <tr>
+          <td>2025-06-19</td>
+          <td>RUBENGERA,KAZO,NYAGATARE</td>
+          <td>SConfigure and sent data to WIS.</td>
+        </tr>
+                 <tr>
+          <td>2025-07-17</td>
+          <td>RUBENGERA,KAZO,NYAGATARE</td>
+          <td>Updating the program by inserting the upper and lower limit quality checks.</td>
+        </tr>
+      </tbody>
+    </table>
 
     <div class="report-section">
       <!-- Monthly Report Boxes -->
-      <!-- Repeat this structure for each month -->
-
-      <!-- Example Box -->
       <div class="report-box">
         <h3>July 2025 M&E Report</h3>
         <p>Status: <strong> Not Done</strong></p>
