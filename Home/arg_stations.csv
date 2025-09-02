@@ -1,6 +1,6 @@
 name,province,district,sensors,activities
 Gasange,EAST,Gatsibo,"[{""type"": ""RH"", ""serialNumber"":""123 ""}, {""type"": ""Rainfall"", ""serialNumber"": ""RF456""}]","[{""date"": ""2025-09-02"", ""activity"": ""Routine Maintenance""}, {""date"": ""2025-08-15"", ""activity"": ""Sensor Calibration""}]"
-Kiziguro,EAST,Gatsibo,,
+Kiziguro,EAST,Gatsibo,"[{""type"": ""RH"", ""serialNumber"":""123 ""}, {""type"": ""Rainfall"", ""serialNumber"": ""RF456""}]",
 Gahini,EAST,Kayonza,,
 Kabarondo,EAST,Kayonza,,
 Murundi East,EAST,Kayonza,,
