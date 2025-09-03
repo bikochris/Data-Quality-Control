@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Station Types - Home</title>
   <style>
-    /* [Previous CSS remains unchanged] */
+    /* Previous CSS remains unchanged, ensuring .suspected class for red highlighting */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -113,6 +113,10 @@
       font-style: italic;
       padding: 10px;
     }
+    .suspected {
+      color: red;
+      font-weight: bold;
+    }
   </style>
   <!-- Include Papa Parse CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -142,12 +146,13 @@
           <option value="">Select Station</option>
         </select>
         <div id="aws-station-details" style="display: none;">
-          <h3>Available Sensors</h3>
+          <h3>Available Sensors/Parameters</h3>
           <table id="aws-sensor-table">
             <thead>
               <tr>
-                <th>Sensor</th>
-                <th>Serial Number</th>
+                <th>Available Sensors/Parameters</th>
+                <th>Status</th>
+                <th>Checked On</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -181,12 +186,13 @@
           <option value="">Select Station</option>
         </select>
         <div id="arg-station-details" style="display: none;">
-          <h3>Available Sensors</h3>
+          <h3>Available Sensors/Parameters</h3>
           <table id="arg-sensor-table">
             <thead>
               <tr>
-                <th>Sensor</th>
-                <th>Serial Number</th>
+                <th>Available Sensors/Parameters</th>
+                <th>Status</th>
+                <th>Checked On</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -418,17 +424,25 @@
         if (station.sensors.length > 0) {
           station.sensors.forEach(sensor => {
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${sensor.type}</td><td>${sensor.serialNumber}</td>`;
+            const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
+            row.innerHTML = `
+              <td>${sensor.type}</td>
+              <td class="${statusClass}">${sensor.status}</td>
+              <td>${sensor.checkedOn || 'N/A'}</td>
+            `;
             sensorTableBody.appendChild(row);
           });
         } else {
-          sensorTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No sensors available</td></tr>';
+          sensorTableBody.innerHTML = '<tr><td colspan="3" class="no-data">No sensors available</td></tr>';
         }
 
         if (station.activities.length > 0) {
           station.activities.forEach(activity => {
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${activity.date}</td><td>${activity.activity}</td>`;
+            row.innerHTML = `
+              <td>${activity.date}</td>
+              <td>${activity.activity}</td>
+            `;
             activityTableBody.appendChild(row);
           });
         } else {
@@ -457,17 +471,25 @@
         if (station.sensors.length > 0) {
           station.sensors.forEach(sensor => {
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${sensor.type}</td><td>${sensor.serialNumber}</td>`;
+            const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
+            row.innerHTML = `
+              <td>${sensor.type}</td>
+              <td class="${statusClass}">${sensor.status}</td>
+              <td>${sensor.checkedOn || 'N/A'}</td>
+            `;
             sensorTableBody.appendChild(row);
           });
         } else {
-          sensorTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No sensors available</td></tr>';
+          sensorTableBody.innerHTML = '<tr><td colspan="3" class="no-data">No sensors available</td></tr>';
         }
 
         if (station.activities.length > 0) {
           station.activities.forEach(activity => {
             const row = document.createElement('tr');
-            row.innerHTML = `<td>${activity.date}</td><td>${activity.activity}</td>`;
+            row.innerHTML = `
+              <td>${activity.date}</td>
+              <td>${activity.activity}</td>
+            `;
             activityTableBody.appendChild(row);
           });
         } else {
