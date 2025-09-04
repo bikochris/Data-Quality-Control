@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Quality Control Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    .top-bar {
+      background: #4796d1;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      align-items: center;
+      background: white;
+    }
+    .logo img {
+      height: 80px;
+    }
+    .nav {
+      background: #008000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+      position: relative;
+      gap: 20px;
+    }
+    .nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .nav a:hover {
+      text-decoration: underline;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #ffffff;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      top: 100%;
+      left: 0;
+      border-left: 4px solid #008000;
+    }
+
+    .dropdown-content a {
+      color: #008000;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: normal;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f4f4f4;
+    }
+
+    .content {
+      padding: 30px;
+      background: #f4f4f4;
+      min-height: 80vh;
+    }
+    .dashboard-box {
+      background: white;
+      border-left: 6px solid #008000;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #008000;
+    }
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .station-categories {
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      position: relative;
+      min-height: 250px; /* Ensure space for stations */
+    }
+    .station-categories h2 {
+      position: absolute;
+      top: 10px; /* Position at the top */
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 24px;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+      z-index: 2;
+    }
+    .station-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px; /* Space below the centered title */
+      position: relative;
+      z-index: 1;
+    }
+    .station-box {
+      text-align: center;
+      vertical-align: top;
+    }
+    .station-box .title {
+      font-size: 16px;
+      color: #fff;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .station-box .number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      margin: 0 auto 10px;
+      display: block;
+    }
+    .station-box .photo {
+      width: 200px;
+      height: 200px;
+      background: #ffc107;
+      border-radius: 10px;
+      margin: 0 auto 10px;
+      overflow: hidden;
+    }
+    .station-box .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .station-box .label {
+      font-size: 14px;
+      color: #fff;
+      background: #4682b4;
+      padding: 5px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    /* Unique background colors for each category and matching number backgrounds */
+    .station-categories.meteo-rwanda {
+      background-color: #4682b4; /* Steel Blue */
+    }
+    .station-categories.meteo-rwanda .number {
+      background-color: #4682b4; /* Match category background */
+    }
+    .station-categories.partners {
+      background-color: #6a5acd; /* Slate Blue */
+    }
+    .station-categories.partners .number {
+      background-color: #6a5acd; /* Match category background */
+    }
+    .station-categories.under-research {
+      background-color: #20b2aa; /* Light Sea Green */
+    }
+    .station-categories.under-research .number {
+      background-color: #20b2aa; /* Match category background */
+    }
+    /* Summary Section Styling */
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .summary h3 {
+      color: #008000;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+    .summary table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary th, .summary td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .summary th {
+      background-color: #008000;
+      color: white;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #008000;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div><strong>Personal Dashboard - Rwanda Meteorology Agency</strong></div>
+  </div>
+
+  <div class="header">
+    <div class="logo">
+      <img src="Dashboard/Rwanda.png" alt="Rwanda Logo">
+    </div>
+    <div>
+      <img src="Dashboard/meteo_logo.jpeg" alt="Rwanda Meteorology Agency Logo">
+    </div>
+  </div>
+
+  <div class="nav">
+    <a href="Home/home.html">Home</a>
+    <a href="QC/qc_reports.html">QC Reports</a>
+    <a href="dataRequests/data_request_reports.html">Data Request Reports</a>
+    <a href="Reporting status/reporting_status_reports.html">Reporting Status Reports</a>
+    <a href="Inspection/Inspection_Reports.html">Inspection Reports</a>
+    <a href="Pre_Maintence/Pre_Maintenance_Reports.html">Pre_Maintenance Reports</a>
+    <a href="Maintenance/Maintenance_Reports.html">Maintenance Reports</a>
+    <a href="Post_Maintenance Report/Post_Maintenance_Reports.html">Post_Maintenance Reports</a>
+    <a href="SOFF/soff.html">SOFF</a>
+    <div class="dropdown">
+      <a href="#" onclick="toggleDropdown(event)">More ▾</a>
+      <div class="dropdown-content" id="moreDropdown">
+        <a href="More/Mettings/metting.html">Meeting</a>
+        <a href="More/Activities/Activities.html">Other Activities</a>
+        <a href="More/Schedule/schedule.html">Schedule</a>
+         <a href="More/Training/Training.html">Training</a>
+        <a href="More/Other_informations/other_information.html">Other information</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="dashboard-box">
+      <h1>RWANDA OPERATIONAL STATIONS NETWORK</h1>
+
+      <div class="station-categories meteo-rwanda">
+        <h2>Maintained by meteo Rwanda</h2>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="title">PRINCIPAL STATIONS</div>
+            <div class="number">13</div>
+            <div class="photo"><img src="Dashboard/pr.jpg" alt="Station 12"></div>
+            <div class="label">Climsoft<br></div>
+          </div>
+          <div class="station-box">
+            <div class="title">VOLUNTEERS STATIONS</div>
+            <div class="number">132</div>
+            <div class="photo"><img src="Dashboard/vol.jpg" alt="Station 11"></div>
+            <div class="label">VOLUNTAIRE STATIONS<br>METEO RWANDA</div>
+          </div>
+          <div class="station-box">
+            <div class="title">AWS Monitor</div>
+            <div class="number">44</div>
+            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 14"></div>
+            <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
+          </div>
+          <div class="station-box">
+            <div class="title">Upgraded By SOFF</div>
+            <div class="number">3</div>
+            <div class="photo"><img src="Dashboard/Soff.PNG" alt="Station 15"></div>
+            <div class="label">AWS_SOFF_ATSserver<br>C:\Campbellsci\LoggerNet</div>
+          </div>
+        </div>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="title">Automatic Rain Gauge</div>
+            <div class="number">70</div>
+            <div class="photo"><img src="Dashboard/Arg.jpg" alt="Station 19"></div>
+            <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
+          </div>
+          <div class="station-box">
+            <div class="title">AWS with Lightning detector</div>
+            <div class="number">8</div>
+            <div class="photo"><img src="Dashboard/lightening.jpg" alt="Station 17"></div>
+            <div class="label">AWS_Lightening_ATSserver<br>C:\NESA\files</div>
+          </div>
+          <div class="station-box">
+            <div class="title">AWS With X and Evolution Log</div>
+            <div class="number">6</div>
+            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 18"></div>
+            <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
+          </div>
+          <div class="station-box">
+            <div class="title">AWS With E-Log</div>
+            <div class="number">3</div>
+            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 19"></div>
+            <div class="label">AWS_Elog_LSAServer<br>C:\DATA\XLOG</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="station-categories partners">
+        <h2>Maintained by partners</h2>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="number">6</div>
+            <div class="photo"><img src="Dashboard/kigali.jfif" alt="Station 14"></div>
+            <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
+          </div>
+          <div class="station-box">
+            <div class="number">3</div>
+            <div class="photo"><img src="Dashboard/FONERWA.png" alt="Station 14"></div>
+            <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
+          </div>
+          <div class="station-box">
+            <div class="number">11</div>
+            <div class="photo"><img src="Dashboard/Naeb.jfif" alt="Station 18"></div>
+            <div class="label">AWS_LSAServer/NAEB<br>C:\DATA\NAEB</div>
+          </div>
+          <div class="station-box">
+            <div class="number">10</div>
+            <div class="photo"><img src="Dashboard/minagri.jfif" alt="Station 18"></div>
+            <div class="label">AWS_LSAServer/MINAGRI<br>C:\DATA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="station-categories under-research">
+        <h2>Under Research</h2>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="title">Research Site</div>
+            <div class="number">2</div>
+            <div class="photo"><img src="Dashboard/precipitationMonitor.jpg" alt="Station 12"></div>
+            <div class="label">ATSserver;C:\disdrometerdata<br>METEORWANDA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="summary">
+        <h3>Summary of Stations</h3>
+        <table>
+          <tr>
+            <th>Category</th>
+            <th>Number of Stations</th>
+          </tr>
+          <tr>
+            <td>Manned_METEO</td>
+            <td>145</td>
+          </tr>
+          <tr>
+            <td>AWS_METEO</td>
+            <td>134</td>
+          </tr>
+           <tr>
+            <td>ARG</td>
+            <td>70</td>
+          </tr>
+          <tr>
+             <td><strong>Maintained By METEO RWANDA</strong></td>
+            <td><strong>349</strong></td>
+          </tr>
+           <tr>
+            <td><strong>AWS_Partners and Research</strong></td>
+            <td>32</td>
+          </tr>
+          <tr>
+            <td><strong>Total Station</strong></td>
+            <td><strong>381</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Sites</strong></td>
+            <td><strong>300/TBD</strong></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Rwanda Meteorology Agency — Personal Dashboard for Data Quality Control
+  </footer>
+
+  <script>
+    function toggleDropdown(event) {
+      event.preventDefault();
+      const dropdown = document.getElementById("moreDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropdown > a')) {
+        var dropdown = document.getElementById("moreDropdown");
+        if (dropdown && dropdown.style.display === "block") {
+          dropdown.style.display = "none";
+        }
+      }
+    }
+  </script>
+</body>
+</html>

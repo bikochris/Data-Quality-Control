@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       background: #f9f9f9;
-      padding-left: 40px; 
+      padding-left: 0; /* Removed padding-left to avoid shifting content */
     }
     header {
       background-color: #008000;
@@ -18,14 +18,13 @@
     }
     .container {
       max-width: 1200px;
-      margin-left: 50px; 
+      margin: 0 auto; /* Center the container */
       display: flex;
-      gap: 20px;
+      gap: 20px; /* Reduced gap for better balance */
+      padding: 20px; /* Added padding for spacing */
     }
     .left-panel {
-      width: 30%;
-      min-width: 320px;
-      max-width: 400px;
+      width: 50%; /* Equal width */
       display: flex;
       flex-direction: column;
       gap: 20px;
@@ -39,7 +38,7 @@
       overflow-x: auto;
     }
     .main-content {
-      width: 70%;
+      width: 50%; /* Equal width */
       background: white;
       padding: 25px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -137,12 +136,22 @@
     .download-btn:hover:not(:disabled) {
       background-color: #006400;
     }
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 10px;
+      }
+      .left-panel, .main-content {
+        width: 100%; /* Full width on smaller screens */
+      }
+    }
   </style>
   <!-- Include Papa Parse CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <!-- Include jsPDF with autoTable CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
   <header>
@@ -187,7 +196,6 @@
             </thead>
             <tbody></tbody>
           </table>
-         
         </div>
       </div>
       <!-- ARG Information -->
@@ -227,7 +235,6 @@
             </thead>
             <tbody></tbody>
           </table>
-         
         </div>
       </div>
     </div>
@@ -244,9 +251,9 @@
         <h3>Enact Data</h3>
         <h3>Enactdata_StationLevel_DailyData</h3>
         <ul>
-          <li><a href="Data/Daily/Tmin_Daily.xlsx" download>🌡️ Maximum Temperature</a></li>
-          <li><a href="/Home/Data/Daily/Tmin_Daily.xlsx" download>❄️ Minimum Temperature</a></li>
-          <li><a href="/Home/Data/Daily/Rainfall_Daily.xlsx" download>☔ Rainfall</a></li>
+          <li><a href="Data/Daily/Tmax_Daily.xlsx" download>🌡️ Maximum Temperature</a></li>
+          <li><a href="Data/Daily/Tmin_Daily.xlsx" download>❄️ Minimum Temperature</a></li>
+          <li><a href="Data/Daily/Rainfall_Daily.xlsx" download>☔ Rainfall</a></li>
         </ul>
         <h3>Enactdata_StationLevel_MonthlyData</h3>
         <ul>
@@ -267,6 +274,7 @@
           <li><a href="Data/Dekads/dekad2022.xlsx" download>2022</a></li>
           <li><a href="Data/Dekads/dekad2023.xlsx" download>2023</a></li>
           <li><a href="Data/Dekads/dekad2024.xlsx" download>2024</a></li>
+          <li><a href="Data/Dekads/dekad2025.xlsx" download>2025</a></li>
         </ul>
       </div>
     </div>
