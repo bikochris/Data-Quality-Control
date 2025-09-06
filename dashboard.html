@@ -259,25 +259,25 @@
       <div class="station-categories meteo-rwanda">
         <h2>Owned by meteo Rwanda</h2>
         <div class="station-row">
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('principal')">
             <div class="title">PRINCIPAL STATIONS</div>
             <div class="number">13</div>
             <div class="photo"><img src="Dashboard/pr.jpg" alt="Station 12"></div>
-            <div class="label">Climsoft<br></div>
+            <div class="label">Climsoft</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('volunteers')">
             <div class="title">VOLUNTEERS STATIONS</div>
             <div class="number">132</div>
             <div class="photo"><img src="Dashboard/vol.jpg" alt="Station 11"></div>
             <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('WEBMONITOR')">
             <div class="title">AWS Monitor</div>
             <div class="number">44</div>
             <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 14"></div>
             <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('SOFF')">
             <div class="title">Upgraded By SOFF</div>
             <div class="number">3</div>
             <div class="photo"><img src="Dashboard/Soff.PNG" alt="Station 15"></div>
@@ -285,25 +285,25 @@
           </div>
         </div>
         <div class="station-row">
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('ARG')">
             <div class="title">Automatic Rain Gauge</div>
             <div class="number">70</div>
             <div class="photo"><img src="Dashboard/Arg.jpg" alt="Station 19"></div>
             <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('LIGHTINING')">
             <div class="title">AWS with Lightning detector</div>
             <div class="number">8</div>
             <div class="photo"><img src="Dashboard/lightening.jpg" alt="Station 17"></div>
             <div class="label">AWS_Lightening_ATSserver<br>C:\NESA\files</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('LSI_METEO')">
             <div class="title">AWS With X and Evolution Log</div>
             <div class="number">6</div>
             <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 18"></div>
             <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('ELOG')">
             <div class="title">AWS With E-Log</div>
             <div class="number">3</div>
             <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 19"></div>
@@ -315,22 +315,22 @@
       <div class="station-categories partners">
         <h2>Owned by partners</h2>
         <div class="station-row">
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('KIGALI_CITY')">
             <div class="number">6</div>
             <div class="photo"><img src="Dashboard/kigali.jfif" alt="Station 14"></div>
             <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('FONERWA')">
             <div class="number">3</div>
             <div class="photo"><img src="Dashboard/FONERWA.png" alt="Station 14"></div>
             <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('NAEB')">
             <div class="number">11</div>
             <div class="photo"><img src="Dashboard/Naeb.jfif" alt="Station 18"></div>
             <div class="label">AWS_LSAServer/NAEB<br>C:\DATA\NAEB</div>
           </div>
-          <div class="station-box">
+          <div class="station-box" onclick="openStations('MINAGRI')">
             <div class="number">10</div>
             <div class="photo"><img src="Dashboard/minagri.jfif" alt="Station 18"></div>
             <div class="label">AWS_LSAServer/MINAGRI<br>C:\DATA</div>
@@ -341,8 +341,7 @@
       <div class="station-categories under-research">
         <h2>Under Research</h2>
         <div class="station-row">
-          <div class="station-box">
-            
+          <div class="station-box" onclick="openStations('PLASER')">
             <div class="number">2</div>
             <div class="photo"><img src="Dashboard/precipitationMonitor.jpg" alt="Station 12"></div>
             <div class="label">ATSserver;C:\disdrometerdata<br>METEORWANDA</div>
@@ -357,8 +356,8 @@
           <tr>
             <th>Category</th>
             <th>Operation</th>
-            <th>Non_Operational</th>
-            <th>Totally Closed</th>
+            <th onclick="openStations('NON_OPERATION')">Non_Operational</th>
+            <th onclick="openStations('TOTALY_CLOSED')">Totally Closed</th>
             <th>TOTAL</th>
           </tr>
           <tr>
@@ -421,20 +420,10 @@
   </footer>
 
   <script>
-    function toggleDropdown(event) {
-      event.preventDefault();
-      const dropdown = document.getElementById("moreDropdown");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    }
-
-    window.onclick = function(event) {
-      if (!event.target.matches('.dropdown > a')) {
-        var dropdown = document.getElementById("moreDropdown");
-        if (dropdown && dropdown.style.display === "block") {
-          dropdown.style.display = "none";
-        }
-      }
-    }
-  </script>
+  function openStations(type) {
+    localStorage.setItem("current_station_type", type);
+    window.location.href = "stations.html";
+  }
+</script>
 </body>
 </html>
