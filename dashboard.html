@@ -213,6 +213,12 @@
       background: #008000;
       color: white;
     }
+    .zoomed {
+    transform: scale(2);
+    transition: transform 0.5s ease;
+    z-index: 9999;
+    position: relative;
+  }
   </style>
 </head>
 <body>
@@ -258,58 +264,81 @@
 
       <div class="station-categories meteo-rwanda">
         <h2>Owned by meteo Rwanda</h2>
-        <div class="station-row">
-          <div class="station-box" onclick="openStations('principal')">
-            <div class="title">PRINCIPAL STATIONS</div>
-            <div class="number">13</div>
-            <div class="photo"><img src="Dashboard/pr.jpg" alt="Station 12"></div>
-            <div class="label">Climsoft</div>
-          </div>
-          <div class="station-box" onclick="openStations('volunteers')">
-            <div class="title">VOLUNTEERS STATIONS</div>
-            <div class="number">132</div>
-            <div class="photo"><img src="Dashboard/vol.jpg" alt="Station 11"></div>
-            <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
-          </div>
-          <div class="station-box" onclick="openStations('WEBMONITOR')">
-            <div class="title">AWS Monitor</div>
-            <div class="number">44</div>
-            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 14"></div>
-            <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
-          </div>
-          <div class="station-box" onclick="openStations('SOFF')">
-            <div class="title">Upgraded By SOFF</div>
-            <div class="number">3</div>
-            <div class="photo"><img src="Dashboard/Soff.PNG" alt="Station 15"></div>
-            <div class="label">AWS_SOFF_ATSserver<br>C:\Campbellsci\LoggerNet</div>
-          </div>
-        </div>
-        <div class="station-row">
-          <div class="station-box" onclick="openStations('ARG')">
-            <div class="title">Automatic Rain Gauge</div>
-            <div class="number">70</div>
-            <div class="photo"><img src="Dashboard/Arg.jpg" alt="Station 19"></div>
-            <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
-          </div>
-          <div class="station-box" onclick="openStations('LIGHTINING')">
-            <div class="title">AWS with Lightning detector</div>
-            <div class="number">8</div>
-            <div class="photo"><img src="Dashboard/lightening.jpg" alt="Station 17"></div>
-            <div class="label">AWS_Lightening_ATSserver<br>C:\NESA\files</div>
-          </div>
-          <div class="station-box" onclick="openStations('LSI_METEO')">
-            <div class="title">AWS With X and Evolution Log</div>
-            <div class="number">6</div>
-            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 18"></div>
-            <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
-          </div>
-          <div class="station-box" onclick="openStations('ELOG')">
-            <div class="title">AWS With E-Log</div>
-            <div class="number">3</div>
-            <div class="photo"><img src="Dashboard/aws.jfif" alt="Station 19"></div>
-            <div class="label">AWS_Elog_LSAServer<br>C:\DATA\XLOG</div>
-          </div>
-        </div>
+<div class="station-row">
+  <div class="station-box">
+    <div class="title" onclick="openStations('principal')">PRINCIPAL STATIONS</div>
+    <div class="number">13</div>
+    <div class="photo">
+      <img src="Dashboard/pr.jpg" alt="Station 12" onclick="zoomAndGo('principal')">
+    </div>
+    <div class="label">Climsoft</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('volunteers')">VOLUNTEERS STATIONS</div>
+    <div class="number">132</div>
+    <div class="photo">
+      <img src="Dashboard/vol.jpg" alt="Station 11" onclick="zoomAndGo('volunteers')">
+    </div>
+    <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('WEBMONITOR')">AWS Monitor</div>
+    <div class="number">44</div>
+    <div class="photo">
+      <img src="Dashboard/aws.jfif" alt="Station 14" onclick="zoomAndGo('WEBMONITOR')">
+    </div>
+    <div class="label">AWS_WebMonintor_ATSserver<br>C:\NESA\files\Climat File</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('SOFF')">Upgraded By SOFF</div>
+    <div class="number">3</div>
+    <div class="photo">
+      <img src="Dashboard/Soff.PNG" alt="Station 15" onclick="zoomAndGo('SOFF')">
+    </div>
+    <div class="label">AWS_SOFF_ATSserver<br>C:\Campbellsci\LoggerNet</div>
+  </div>
+</div>
+
+<div class="station-row">
+  <div class="station-box">
+    <div class="title" onclick="openStations('ARG')">Automatic Rain Gauge</div>
+    <div class="number">70</div>
+    <div class="photo">
+      <img src="Dashboard/Arg.jpg" alt="Station 19" onclick="zoomAndGo('ARG')">
+    </div>
+    <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('LIGHTINING')">AWS with Lightning detector</div>
+    <div class="number">8</div>
+    <div class="photo">
+      <img src="Dashboard/lightening.jpg" alt="Station 17" onclick="zoomAndGo('LIGHTINING')">
+    </div>
+    <div class="label">AWS_Lightening_ATSserver<br>C:\NESA\files</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('LSI_METEO')">AWS With X and Evolution Log</div>
+    <div class="number">6</div>
+    <div class="photo">
+      <img src="Dashboard/aws.jfif" alt="Station 18" onclick="zoomAndGo('LSI_METEO')">
+    </div>
+    <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
+  </div>
+
+  <div class="station-box">
+    <div class="title" onclick="openStations('ELOG')">AWS With E-Log</div>
+    <div class="number">3</div>
+    <div class="photo">
+      <img src="Dashboard/aws.jfif" alt="Station 19" onclick="zoomAndGo('ELOG')">
+    </div>
+    <div class="label">AWS_Elog_LSAServer<br>C:\DATA\XLOG</div>
+  </div>
+</div>
       </div>
 
       <div class="station-categories partners">
@@ -423,7 +452,23 @@
   function openStations(type) {
     localStorage.setItem("current_station_type", type);
     window.location.href = "stations.html";
+    
   }
+  function zoomAndGo(name) {
+    // Find the clicked image
+    event.stopPropagation(); // prevent bubbling
+    let img = event.target;
+
+    // Apply zoom effect
+    img.classList.add("zoomed");
+
+    // After 1s, remove zoom and go to the HTML file
+    setTimeout(() => {
+      img.classList.remove("zoomed");
+      window.location.href = name + ".html"; 
+    }, 1000);
+  }
+  
 </script>
 </body>
 </html>
