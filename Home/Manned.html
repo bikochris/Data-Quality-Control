@@ -89,10 +89,6 @@
     h1 {
       color: #008000;
     }
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-    }
     .station-categories {
       padding: 20px;
       border-radius: 10px;
@@ -118,11 +114,14 @@
       margin-top: 40px;
       position: relative;
       z-index: 1;
+      flex-wrap: wrap;
+      gap: 20px;
     }
     .station-box {
       text-align: center;
-      vertical-align: top;
       cursor: pointer;
+      flex: 0 0 22%;
+      margin-bottom: 20px;
     }
     .station-box .title {
       font-size: 16px;
@@ -157,54 +156,21 @@
     .station-box .label {
       font-size: 14px;
       color: #fff;
-      background: #4682b4;
       padding: 5px;
       border-radius: 5px;
       display: inline-block;
     }
-    .station-categories.meteo-rwanda {
-      background-color: #4682b4;
-    }
-    .station-categories.meteo-rwanda .number {
-      background-color: #4682b4;
-    }
-    .station-categories.partners {
-      background-color: #6a5acd;
-    }
-    .station-categories.partners .number {
-      background-color: #6a5acd;
-    }
-    .station-categories.under-research {
-      background-color: #20b2aa;
-    }
-    .station-categories.under-research .number {
-      background-color: #20b2aa;
-    }
-    .summary {
-      margin-top: 20px;
-      padding: 15px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .summary h3 {
-      color: #008000;
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    .summary table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .summary th, .summary td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    .summary th {
-      background-color: #008000;
-      color: white;
-    }
+    /* Province Colors */
+    .station-categories.kigali-city { background-color: #4682b4; }
+    .station-categories.kigali-city .number, .station-categories.kigali-city .label { background-color: #4682b4; }
+    .station-categories.eastern-province { background-color: #6a5acd; }
+    .station-categories.eastern-province .number, .station-categories.eastern-province .label { background-color: #6a5acd; }
+    .station-categories.northern-province { background-color: #20b2aa; }
+    .station-categories.northern-province .number, .station-categories.northern-province .label { background-color: #20b2aa; }
+    .station-categories.western-province { background-color: #ff6347; }
+    .station-categories.western-province .number, .station-categories.western-province .label { background-color: #ff6347; }
+    .station-categories.southern-province { background-color: #32cd32; }
+    .station-categories.southern-province .number, .station-categories.southern-province .label { background-color: #32cd32; }
     footer {
       text-align: center;
       padding: 10px;
@@ -263,182 +229,121 @@
 
   <div class="content">
     <div class="dashboard-box">
-      <h1>Rwanda Operational Stations Network</h1>
+      <h1>Operational Principal Stations</h1>
 
-      <div class="station-categories meteo-rwanda">
-        <h2>Owned by Meteo Rwanda</h2>
+      <!-- Kigali -->
+      <div class="station-categories kigali-city">
+        <h2>Kigali City</h2>
         <div class="station-row">
           <div class="station-box">
-            <div class="title" onclick="openStations('principal')">Principal Stations</div>
-            <div class="number">13</div>
+            <div class="title" onclick="openStations('Gitega')">GITEGA</div>
             <div class="photo">
-              <img src="principal/pr.jpg" alt="Principal Station" onclick="zoomAndGo('principal/Principal')">
+              <img src="KIGALI/kigali.jfif" alt="Kigali City Station" onclick="zoomAndGo(event,'KIGALI/KIGALI_CITY')">
             </div>
-            <div class="label">Climsoft</div>
           </div>
           <div class="station-box">
-            <div class="title" onclick="openStations('volunteers')">Volunteers Stations</div>
-            <div class="number">132</div>
+            <div class="title" onclick="openStations('principal')">KANOMBE AERO</div>
             <div class="photo">
-              <img src="Volunteers/vol.jpg" alt="Volunteers Station" onclick="zoomAndGo('Volunteers/volunteers')">
+              <img src="principal/pr.jpg" alt="Principal Station" onclick="zoomAndGo(event,'principal/Principal')">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Southern -->
+      <div class="station-categories southern-province">
+        <h2>Southern Province</h2>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="title" onclick="openStations('volunteers')">BYIMANA</div>
+            <div class="photo">
+              <img src="Volunteers/vol.jpg" alt="Byimana Station" onclick="zoomAndGo(event,'Volunteers/volunteers')">
             </div>
             <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
           </div>
           <div class="station-box">
-            <div class="title" onclick="openStations('WEBMONITOR')">AWS Monitor</div>
+            <div class="title" onclick="openStations('WEBMONITOR')">GIKONGORO</div>
             <div class="number">44</div>
             <div class="photo">
-              <img src="aws.jfif" alt="AWS Monitor Station" onclick="zoomAndGo('Webmonitor/WEBMONITOR')">
+              <img src="aws.jfif" alt="AWS Monitor Station" onclick="zoomAndGo(event,'Webmonitor/WEBMONITOR')">
             </div>
-            <div class="label">AWS_WebMonitor_ATSserver<br>C:\NESA\files\Climat File</div>
-          </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('SOFF')">Upgraded By SOFF</div>
-            <div class="number">3</div>
-            <div class="photo">
-              <img src="SOOF/Soff.PNG" alt="SOFF Station" onclick="zoomAndGo('SOOF/SOFF')">
-            </div>
-            <div class="label">AWS_SOFF_ATSserver<br>C:\Campbellsci\LoggerNet</div>
-          </div>
-        </div>
-        <div class="station-row">
-          <div class="station-box">
-            <div class="title" onclick="openStations('ARG')">Automatic Rain Gauge</div>
-            <div class="number">70</div>
-            <div class="photo">
-              <img src="ARG/Arg.jpg" alt="Automatic Rain Gauge" onclick="zoomAndGo('ARG/arg')">
-            </div>
-            <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
-          </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('LIGHTNING')">AWS with Lightning Detector</div>
-            <div class="number">8</div>
-            <div class="photo">
-              <img src="/Dashboard/Lightining/lightening.jpg" alt="Lightning Station" onclick="zoomAndGo('Lightining/LIGHTINING')">
-            </div>
-            <div class="label">AWS_Lightning_ATSserver<br>C:\NESA\files</div>
-          </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('LSI_METEO')">AWS with X and Evolution Log</div>
-            <div class="number">6</div>
-            <div class="photo">
-              <img src="aws.jfif" alt="AWS X and Evolution Station" onclick="zoomAndGo('LSI_METEO/LSI_METEO')">
-            </div>
-            <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
-          </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('ELOG')">AWS with E-Logs</div>
-            <div class="number">3</div>
-            <div class="photo">
-              <img src="aws.jfif" alt="E-Logs Station" onclick="zoomAndGo('Elog/ELOG')">
-            </div>
-            <div class="label">AWS_Elog_LSAServer<br>C:\DATA\XLOG</div>
           </div>
         </div>
       </div>
 
-      <div class="station-categories partners">
-        <h2>Owned by Partners</h2>
+      <!-- Northern -->
+      <div class="station-categories northern-province">
+        <h2>Northern Province</h2>
         <div class="station-row">
-          <div class="station-box" onclick="openStations('KIGALI_CITY')">
-            <div class="title">Kigali City</div>
-            <div class="number">6</div>
-            <div class="photo"><img src="KIGALI/kigali.jfif" alt="Kigali City Station"></div>
-            <div class="label">AWS_WebMonitor_ATSserver<br>C:\NESA\files\Climat File</div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('SOFF')">BYUMBA</div>
+            <div class="photo">
+              <img src="SOFF/Soff.PNG" alt="SOFF Station" onclick="zoomAndGo(event,'SOFF/SOFF')">
+            </div>
           </div>
-          <div class="station-box" onclick="openStations('FONERWA')">
-            <div class="title">FONERWA</div>
-            <div class="number">3</div>
-            <div class="photo"><img src="FONERWA/FONERWA.png" alt="FONERWA Station"></div>
-            <div class="label">AWS_WebMonitor_ATSserver<br>C:\NESA\files\Climat File</div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('ARG')">BUSOGO</div>
+            <div class="photo">
+              <img src="ARG/Arg.jpg" alt="Automatic Rain Gauge" onclick="zoomAndGo(event,'ARG/arg')">
+            </div>
           </div>
-          <div class="station-box" onclick="openStations('NAEB')">
-            <div class="title">NAEB</div>
-            <div class="number">11</div>
-            <div class="photo"><img src="NAEB/Naeb.jfif" alt="NAEB Station"></div>
-            <div class="label">AWS_LSAServer/NAEB<br>C:\DATA\NAEB</div>
-          </div>
-          <div class="station-box" onclick="openStations('MINAGRI')">
-            <div class="title">MINAGRI</div>
-            <div class="number">10</div>
-            <div class="photo"><img src="MINAGRI/minagri.jfif" alt="MINAGRI Station"></div>
-            <div class="label">AWS_LSAServer/MINAGRI<br>C:\DATA</div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('LIGHTNING')">RUHENGERI</div>
+            <div class="photo">
+              <img src="Lightning/lightning.jpg" alt="Lightning Station" onclick="zoomAndGo(event,'Lightning/LIGHTNING')">
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="station-categories under-research">
-        <h2>Under Research</h2>
+      <!-- Western -->
+      <div class="station-categories western-province">
+        <h2>Western Province</h2>
         <div class="station-row">
-          <div class="station-box" onclick="openStations('PLASER')">
-            <div class="title">PLASER</div>
-            <div class="number">2</div>
-            <div class="photo"><img src="PLASER/precipitationMonitor.jpg" alt="PLASER Station"></div>
-            <div class="label">ATSserver;C:\disdrometerdata<br>METEORWANDA</div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('LSI_METEO')">GISENYI AERO</div>
+            <div class="photo">
+              <img src="aws.jfif" alt="AWS Station" onclick="zoomAndGo(event,'LSI_METEO/LSI_METEO')">
+            </div>
+          </div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('ELOG')">RUBENGERA</div>
+            <div class="photo">
+              <img src="aws.jfif" alt="E-Logs Station" onclick="zoomAndGo(event,'Elog/ELOG')">
+            </div>
+          </div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('FONERWA')">KAMEMBE</div>
+            <div class="photo">
+              <img src="FONERWA/FONERWA.png" alt="FONERWA Station" onclick="zoomAndGo(event,'FONERWA/FONERWA')">
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="summary">
-        <h3>Summary of Stations</h3>
-        <table>
-          <tr>
-            <th>Category</th>
-            <th>Operational</th>
-            <th onclick="openStations('NON_OPERATIONAL')">Non-Operational</th>
-            <th onclick="openStations('TOTALLY_CLOSED')">Totally Closed</th>
-            <th>Total</th>
-          </tr>
-          <tr>
-            <td>Manned METEO</td>
-            <td>145</td>
-            <td>0</td>
-            <td>128</td>
-            <td>273</td>
-          </tr>
-          <tr>
-            <td>AWS METEO</td>
-            <td>74</td>
-            <td>0</td>
-            <td>0</td>
-            <td>74</td>
-          </tr>
-          <tr>
-            <td>ARG</td>
-            <td>70</td>
-            <td>15</td>
-            <td>8 to full AWS</td>
-            <td>94</td>
-          </tr>
-          <tr>
-            <td>Manned Partners</td>
-            <td>0</td>
-            <td>TBD</td>
-            <td>TBD</td>
-            <td>TBD</td>
-          </tr>
-          <tr>
-            <td>AWS Partners and Research</td>
-            <td>32</td>
-            <td>TBD</td>
-            <td>TBD</td>
-            <td>TBD</td>
-          </tr>
-          <tr>
-            <td><strong>Total Stations</strong></td>
-            <td><strong>311</strong></td>
-            <td><strong>15</strong></td>
-            <td><strong>136</strong></td>
-            <td><strong>462</strong></td>
-          </tr>
-          <tr>
-            <td><strong>Sites</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-          </tr>
-        </table>
+      <!-- Eastern -->
+      <div class="station-categories eastern-province">
+        <h2>Eastern Province</h2>
+        <div class="station-row">
+          <div class="station-box">
+            <div class="title" onclick="openStations('NAEB')">KAWANGIRE</div>
+            <div class="photo">
+              <img src="NAEB/Naeb.jfif" alt="NAEB Station" onclick="zoomAndGo(event,'NAEB/NAEB')">
+            </div>
+          </div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('MINAGRI')">KAZO</div>
+            <div class="photo">
+              <img src="MINAGRI/minagri.jfif" alt="MINAGRI Station" onclick="zoomAndGo(event,'MINAGRI/MINAGRI')">
+            </div>
+          </div>
+          <div class="station-box">
+            <div class="title" onclick="openStations('PLASER')">NYAGATARE</div>
+            <div class="photo">
+              <img src="PLASER/precipitationMonitor.jpg" alt="PLASER Station" onclick="zoomAndGo(event,'PLASER/PLASER')">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -456,10 +361,10 @@
 
     function openStations(type) {
       localStorage.setItem("current_station_type", type);
-      window.location.href = "stations.html";
+      window.location.href = "principal.html";
     }
 
-    function zoomAndGo(name) {
+    function zoomAndGo(event, name) {
       event.stopPropagation();
       const img = event.target;
       img.classList.add("zoomed");
@@ -469,7 +374,6 @@
       }, 1000);
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (event) => {
       const dropdowns = document.querySelectorAll('.dropdown-content');
       dropdowns.forEach(dropdown => {

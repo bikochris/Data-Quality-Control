@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stations List</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background:#f4f4f4; }
+    h1 { color:#008000; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background:white; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background: #008000; color: white; }
+  </style>
+</head>
+<body>
+  <h1 id="title">Stations Data</h1>
+  <div id="tableContainer"></div>
+
+  <script>
+    // Single Excel file with multiple sheets
+    const excelFile = "Principal.xlsx"; // replace with your actual file path
+    const sheetMap = {
+      Gitega: "Gitega",      // sheet name for Gitega stations
+      volunteers: "Volunteers",    // sheet name for volunteers stations
+      SOFF: "SOFF",                // sheet name for SOFF stations
+      NAEB: "NAEB",                 // sheet name for NAEB stations
+      MINAGRI: "MINAGRI",      // sheet name for principal stations
+      FONERWA: "FONERWA",    // sheet name for volunteers stations
+      KIGALI_CITY: "KIGALI_CITY",                 // sheet name for NAEB stations
+      WEBMONITOR: "WEBMONITOR",                // sheet name for SOFF stations
+      ARG: "ARG",                 // sheet name for NAEB stations
+      LSI_METEO: "LSI_METEO",      // sheet name for principal stations
+      LIGHTINING: "LIGHTINING",    // sheet name for volunteers stations
+      ELOG: "ELOG",          
+      PLASER: "PLASER",
+      NON_OPERATION: "NON_OPERATION", 
+      TOTALY_CLOSED: "TOTALY_CLOSED", // sheet name for NAEB stations
+    };
+
+    const current = localStorage.getItem("current_station_type"); // set on dashboard click
+    const container = document.getElementById("tableContainer");
+    const title = document.getElementById("title");
+
+    async function loadSheet(sheetName) {
+      try {
+        const response = await fetch(excelFile);
+        const arrayBuffer = await response.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: "array", cellDates: true, dateNF: "yyyy-mm-dd" });
+
+        if (!workbook.SheetNames.includes(sheetName)) {
+          console.error("Sheet not found:", sheetName);
+          return [];
+        }
+
+        const sheet = workbook.Sheets[sheetName];
+        return XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false });
+      } catch (e) {
+        console.error("Error loading file", excelFile, e);
+        return [];
+      }
+    }
+
+    async function init() {
+      if (!current || !sheetMap[current]) {
+        container.innerHTML = "<p style='color:red'>No station type selected.</p>";
+        return;
+      }
+
+      const sheetName = sheetMap[current];
+      title.textContent = current.charAt(0).toUpperCase() + current.slice(1) + " Stations";
+
+      const data = await loadSheet(sheetName);
+
+      if (data.length === 0) {
+        container.innerHTML = "<p style='color:red'>No data available.</p>";
+        return;
+      }
+
+      // Build table
+      let html = "<table>";
+      html += "<tr>" + data[0].map(h => `<th>${h}</th>`).join("") + "</tr>";
+      for (let i = 1; i < data.length; i++) {
+        html += "<tr>" + data[i].map((cell, index) => {
+          // Ensure the 5th column (index 4) is treated as a date string
+          if (index === 4 && cell instanceof Date) {
+            return `<td>${XLSX.utils.format_cell({ t: 'd', v: cell, z: 'yyyy-mm-dd' })}</td>`;
+          }
+          return `<td>${cell ?? ""}</td>`;
+        }).join("") + "</tr>";
+      }
+      html += "</table>";
+
+      container.innerHTML = html;
+    }
+
+    init();
+  </script>
+</body>
+</html>
