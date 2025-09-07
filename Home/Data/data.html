@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       background: #f9f9f9;
-      padding-left: 0;
+      padding-left: 0; /* Removed padding-left to avoid shifting content */
     }
     header {
       background-color: #008000;
@@ -18,24 +18,17 @@
     }
     .container {
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
+      margin: 0 auto; /* Center the container */
+      display: flex;
+      gap: 20px; /* Reduced gap for better balance */
+      padding: 20px; /* Added padding for spacing */
     }
     .left-panel {
-      width: 100%;
+      width: 50%; /* Equal width */
       display: flex;
       flex-direction: column;
       gap: 20px;
       overflow-x: hidden;
-    }
-    .station-type-selector {
-      background: white;
-      padding: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-left: 5px solid #008000;
-      max-width: 400px; /* Reasonable width for selector */
-      margin: 0 auto; /* Center horizontally */
-      text-align: center; /* Center content inside */
     }
     .aws-info, .arg-info {
       background: white;
@@ -43,8 +36,13 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border-left: 5px solid #008000;
       overflow-x: auto;
-      max-width: 100%; /* Ensure container fits window */
-      display: none; /* Initially hidden */
+    }
+    .main-content {
+      width: 50%; /* Equal width */
+      background: white;
+      padding: 25px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-left: 5px solid #008000;
     }
     h2 {
       color: #008000;
@@ -92,28 +90,23 @@
     .data-section a:hover {
       text-decoration: underline;
     }
-    .station-type-selector select, .aws-info select, .arg-info select {
+    .aws-info select, .arg-info select {
       width: 100%;
-      max-width: 350px; /* Reasonable width for dropdowns */
-      margin: 10px auto; /* Center dropdowns */
+      margin-top: 10px;
       padding: 8px;
       border: 1px solid #008000;
       border-radius: 4px;
-      display: block; /* Ensure block display for centering */
     }
     .aws-info table, .arg-info table {
       width: 100%;
-      max-width: 100%; /* Ensure tables fit container */
       margin-top: 10px;
       border-collapse: collapse;
       display: none;
-      table-layout: auto; /* Allow columns to adjust naturally */
     }
     .aws-info th, .aws-info td, .arg-info th, .arg-info td {
       border: 1px solid #008000;
       padding: 8px;
       text-align: left;
-      white-space: nowrap; /* Prevent text wrapping where possible */
     }
     .aws-info th, .arg-info th {
       background-color: #f1fdf1;
@@ -143,22 +136,14 @@
     .download-btn:hover:not(:disabled) {
       background-color: #006400;
     }
+    /* Responsive design for smaller screens */
     @media (max-width: 768px) {
       .container {
+        flex-direction: column;
         padding: 10px;
       }
-      .left-panel {
-        width: 100%;
-      }
-      .station-type-selector {
-        max-width: 100%; /* Full width on smaller screens */
-        padding: 15px;
-      }
-      .station-type-selector select, .aws-info select, .arg-info select {
-        max-width: 100%; /* Full width on smaller screens */
-      }
-      .aws-info, .arg-info {
-        padding: 15px;
+      .left-panel, .main-content {
+        width: 100%; /* Full width on smaller screens */
       }
     }
   </style>
@@ -170,22 +155,12 @@
 </head>
 <body>
   <header>
-    <h1>Station Maintenance</h1>
+    <h1>Station Types Overview</h1>
   </header>
   <div class="container">
     <div class="left-panel">
-      <!-- Station Type Selector -->
-      <div class="station-type-selector">
-        <h2>Select Station Type</h2>
-        <label for="station-type">Station Type:</label>
-        <select id="station-type" onchange="toggleStationType()">
-          <option value="">Select Station Type</option>
-          <option value="aws">AWS</option>
-          <option value="arg">ARG</option>
-        </select>
-      </div>
       <!-- AWS Information -->
-      <div class="aws-info" id="aws-info">
+      <div class="aws-info">
         <h2>AWS Information</h2>
         <label for="aws-province">Province:</label>
         <select id="aws-province" onchange="updateAWSOptions('district')">
@@ -224,7 +199,7 @@
         </div>
       </div>
       <!-- ARG Information -->
-      <div class="arg-info" id="arg-info">
+      <div class="arg-info">
         <h2>ARG Information</h2>
         <label for="arg-province">Province:</label>
         <select id="arg-province" onchange="updateARGOptions('district')">
@@ -263,39 +238,41 @@
         </div>
       </div>
     </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      
+      <div class="data-section">
+        <h3>Enact Data</h3>
+        <h3>Enactdata_StationLevel_DailyData</h3>
+        <ul>
+          <li><a href="Data/Daily/Tmax_Daily.xlsx" download>🌡️ Maximum Temperature</a></li>
+          <li><a href="Data/Daily/Tmin_Daily.xlsx" download>❄️ Minimum Temperature</a></li>
+          <li><a href="Data/Daily/Rainfall_Daily.xlsx" download>☔ Rainfall</a></li>
+        </ul>
+        <h3>Enactdata_StationLevel_MonthlyData</h3>
+        <ul>
+          <li><a href="Data/Monthly/Tmax_Monthly.xlsx" download>🌡️ Maximum Temperature</a></li>
+          <li><a href="Data/Monthly/Tmin_Monthly.xlsx" download>❄️ Minimum Temperature</a></li>
+          <li><a href="Data/Monthly/Rainfall_Monthly.xlsx" download>☔ Rainfall</a></li>
+        </ul>
+        <h3>Enactdata_StationLevel_YearlyData</h3>
+        <ul>
+          <li><a href="Data/Yearly/Tmax_Yearly.csv" download>🌡️ Maximum Temperature</a></li>
+          <li><a href="Data/Yearly/Tmin_Yearly.csv" download>❄️ Minimum Temperature</a></li>
+          <li><a href="Data/Yearly/Rainfall_Yearly.csv" download>☔ Rainfall</a></li>
+        </ul>
+        <h3>Dekads</h3>
+        <ul>
+          <li><a href="Data/Dekads/dekad2020.xlsx" download>2020</a></li>
+          <li><a href="Data/Dekads/dekad2021.xlsx" download>2021</a></li>
+          <li><a href="Data/Dekads/dekad2022.xlsx" download>2022</a></li>
+          <li><a href="Data/Dekads/dekad2023.xlsx" download>2023</a></li>
+          <li><a href="Data/Dekads/dekad2024.xlsx" download>2024</a></li>
+          <li><a href="Data/Dekads/dekad2025.xlsx" download>2025</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <script>
-    function toggleStationType() {
-      const stationType = document.getElementById('station-type').value;
-      const awsInfo = document.getElementById('aws-info');
-      const argInfo = document.getElementById('arg-info');
-
-      // Hide both sections by default
-      awsInfo.style.display = 'none';
-      argInfo.style.display = 'none';
-
-      // Reset dropdowns and tables
-      document.getElementById('aws-province').value = '';
-      document.getElementById('aws-district').value = '';
-      document.getElementById('aws-station').value = '';
-      document.getElementById('aws-district').disabled = true;
-      document.getElementById('aws-station').disabled = true;
-      document.getElementById('aws-station-details').style.display = 'none';
-      document.getElementById('arg-province').value = '';
-      document.getElementById('arg-district').value = '';
-      document.getElementById('arg-station').value = '';
-      document.getElementById('arg-district').disabled = true;
-      document.getElementById('arg-station').disabled = true;
-      document.getElementById('arg-station-details').style.display = 'none';
-
-      // Show the selected section
-      if (stationType === 'aws') {
-        awsInfo.style.display = 'block';
-      } else if (stationType === 'arg') {
-        argInfo.style.display = 'block';
-      }
-    }
-  </script>
   <script src="tables.js"></script>
   <footer>
     &copy; 2025 Rwanda Meteorology Agency — Station Types Summary
