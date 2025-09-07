@@ -79,30 +79,23 @@
       'March 2026', 'April 2026', 'May 2026', 'June 2026'
     ];
 
-    // Google Sheets API configuration
-    const SPREADSHEET_ID = 'AKfycbxmCZTcOeAqx2fEb3DwhFYhsmwDmhKK6pB-FGsgwcskSq8iVlvyyM4CqrpaAPvxozzC6g'; // Replace with your Google Sheet ID
-    const API_KEY = 'https://script.google.com/macros/s/AKfycbxmCZTcOeAqx2fEb3DwhFYhsmwDmhKK6pB-FGsgwcskSq8iVlvyyM4CqrpaAPvxozzC6g/exec'; // Replace with your Google Sheets API key
-    const SHEET_NAME = 'DataRequests';
-    const RANGE = 'B2:B13'; // Fetch data from column B, rows 2 to 13
+    // Apps Script web app URL
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzXQWSrjl-nl9Bz9P_400MJtl2MEqu7cMSXwOxU51T3ro_eCZwCmquL6fJhucLLrxT4Qg/exec';
 
     async function loadGoogleSheetData() {
       try {
-        const response = await fetch(
-          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!${RANGE}?key=${API_KEY}`
-        );
+        const response = await fetch(APPS_SCRIPT_URL);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        if (!data.values) {
-          alert("Sheet 'DataRequests' or range 'B2:B13' not found in the Google Sheet");
+        if (data.error) {
+          alert(data.error);
           return [];
         }
-        // Convert values to numbers, handle null/undefined
-        const requests = data.values.map(row => (row[0] ? Number(row[0]) : null));
-        return requests;
+        return data; // Data is already an array of numbers or null
       } catch (error) {
-        console.error('Error fetching Google Sheet data:', error);
+        console.error('Error fetching Apps Script data:', error);
         alert('Failed to load data from Google Sheet');
         return [];
       }
