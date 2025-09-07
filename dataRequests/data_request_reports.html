@@ -80,7 +80,7 @@
     ];
 
     // Apps Script web app URL
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6DiALICY984XPL4ctPW6s5nPzbd7Yx0cWnnW594uh_R8C2foG4eEvywGGoufwkWIiUw/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmz4EeXhYTbmyp1yfU0o1XWPnFxRtgWEIylEME9wd4N1YsoNIdwX7-XQZ6Yr7_eJPN2g/exec';
 
     async function loadGoogleSheetData() {
       try {
@@ -93,7 +93,7 @@
           alert(data.error);
           return [];
         }
-        return data; // Data is already an array of numbers or null
+        return data.dataRequests || []; // Extract dataRequests array, default to empty if not present
       } catch (error) {
         console.error('Error fetching Apps Script data:', error);
         alert('Failed to load data from Google Sheet');
