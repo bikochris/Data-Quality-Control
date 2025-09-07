@@ -5,94 +5,34 @@
   <title>Data Request Reports - Meteo Rwanda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
-    .top-bar {
-      background: #4796d1;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      background: white;
-      align-items: center;
-    }
-    .logo img {
-      height: 80px;
-    }
-    .nav {
-      background: #008000;
-      color: white;
-      display: flex;
-      justify-content: center;
-      padding: 12px 0;
-    }
-    .nav a {
-      color: white;
-      margin: 0 20px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+    .top-bar { background: #4796d1; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header { display: flex; justify-content: space-between; padding: 20px; background: white; align-items: center; }
+    .logo img { height: 80px; }
+    .nav { background: #008000; color: white; display: flex; justify-content: center; padding: 12px 0; }
+    .nav a { color: white; margin: 0 20px; text-decoration: none; font-weight: bold; font-size: 16px; }
     .nav a:hover { text-decoration: underline; }
-    .content {
-      padding: 40px;
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-left: 6px solid #008000;
-    }
+    .content { padding: 40px; max-width: 1000px; margin: auto; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 6px solid #008000; }
     h1 { color: #008000; margin-bottom: 20px; }
     .icon { float: right; width: 80px; height: 80px; object-fit: contain; }
     .report-section { margin-top: 30px; }
-    .report-box {
-      background: #eafaf1;
-      padding: 20px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      border-left: 5px solid #008000;
-    }
+    .report-box { background: #eafaf1; padding: 20px; border: 1px solid #ccc; margin-bottom: 20px; border-left: 5px solid #008000; }
     .report-box h3 { margin-top: 0; }
-    .report-box a {
-      display: inline-block;
-      margin-top: 10px;
-      color: #006400;
-      font-weight: bold;
-      text-decoration: none;
-    }
+    .report-box a { display: inline-block; margin-top: 10px; color: #006400; font-weight: bold; text-decoration: none; }
     .report-box a:hover { text-decoration: underline; }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #008000;
-      color: white;
-      margin-top: 50px;
-    }
-    .chart-card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-left: 6px solid #4796d1;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-      border-radius: 8px;
-      padding: 16px 16px 24px 16px;
-      margin: 24px 0 8px 0;
-    }
+    footer { text-align: center; padding: 10px; background: #008000; color: white; margin-top: 50px; }
+    .chart-card { background: #ffffff; border: 1px solid #e5e7eb; border-left: 6px solid #4796d1; box-shadow: 0 4px 8px rgba(0,0,0,0.06); border-radius: 8px; padding: 16px 16px 24px 16px; margin: 24px 0 8px 0; }
     .chart-title { margin: 0 0 6px 0; color: #1f2937; font-size: 18px; font-weight: 700; }
     .chart-subtitle { margin: 0 0 12px 0; color: #4b5563; font-size: 14px; }
     .note { font-size: 12px; color: #374151; margin-top: 8px; }
     .muted { color: #6b7280; }
     .total-box { margin-top: 20px; font-size: 16px; font-weight: bold; color: #008000; }
   </style>
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- SheetJS -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -124,23 +64,10 @@
     <section class="chart-card" aria-label="Monthly data requests chart">
       <h2 class="chart-title">Monthly Data Requests</h2>
       <canvas id="dataRequestChart" height="90"></canvas>
-      
       <div class="total-box" id="totalRequests">Total Data Requests: 0</div>
     </section>
 
-    <div class="report-section">
-      <div class="report-box">
-        <h3>July 2025: 25 Data Requests</h3>
-        <p>Status: <strong> Done</strong></p>
-        <a href="DATA REQUEST REPORT-JULY_2025.docx" download>📥 Download Report</a>
-      </div>
-
-      <div class="report-box">
-        <h3>August 2025: 15 Data Requests</h3>
-        <p>Status: <strong> Done</strong></p>
-        <a href="DATA REQUEST REPORT-AUGUST_2025.docx" download>📥 Download Report</a>
-      </div>
-    </div>
+    <div class="report-section" id="reportList"></div>
   </div>
 
   <footer>
@@ -148,42 +75,78 @@
   </footer>
 
   <script>
-    const months = ['July 2025','August 2025','September 2025','October 2025',
+    const months = [
+      'July 2025','August 2025','September 2025','October 2025',
       'November 2025','December 2025','January 2026','February 2026',
-      'March 2026','April 2026','May 2026','June 2026'];
+      'March 2026','April 2026','May 2026','June 2026'
+    ];
 
-    // Enter number of requests for each month (null if unknown)
-    const requests = [25, 15, null, null, null, null, null, null, null, null, null, null];
+    async function loadExcelData() {
+      const response = await fetch("Summary.xlsx"); // must exist in same folder
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-    const ctx = document.getElementById('dataRequestChart').getContext('2d');
-
-    const dataRequestChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: months,
-        datasets: [{
-          label: 'Number of Data Requests',
-          data: requests,
-          backgroundColor: 'rgba(0,128,0,0.5)',
-          borderColor: '#008000',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 5 } }
-        }
+      const sheet = workbook.Sheets["DataRequests"];
+      if (!sheet) {
+        alert("Sheet 'summary' not found in DataRequests.xlsx");
+        return [];
       }
-    });
 
-    // Calculate and display total
-    function calculateTotal() {
-      const total = requests.reduce((sum, val) => sum + (val || 0), 0);
-      document.getElementById('totalRequests').textContent = 'Total Data Requests: ' + total;
+      // Convert sheet to raw array
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      // Take column B values from row 2 to 13
+      const requests = jsonData.slice(1, 13).map(row => row[1] ?? null);
+      return requests;
     }
 
-    calculateTotal();
+    async function renderPage() {
+      const requests = await loadExcelData();
+
+      // === Chart ===
+      const ctx = document.getElementById("dataRequestChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: months,
+          datasets: [{
+            label: "Number of Data Requests",
+            data: requests,
+            backgroundColor: "rgba(0,128,0,0.5)",
+            borderColor: "#008000",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 5 } } }
+        }
+      });
+
+      // === Total requests ===
+      const total = requests.reduce((sum, val) => sum + (val || 0), 0);
+      document.getElementById("totalRequests").textContent =
+        "Total Data Requests: " + total;
+
+      // === Dynamic report list ===
+      const reportList = document.getElementById("reportList");
+      reportList.innerHTML = ""; // clear
+      requests.forEach((val, i) => {
+        if (val !== null) {
+          const box = document.createElement("div");
+          box.className = "report-box";
+          box.innerHTML = `
+            <h3>${months[i]}: ${val} Data Requests</h3>
+            <p>Status: <strong>Done</strong></p>
+            <a href="DATA REQUEST REPORT-${months[i].toUpperCase().replace(" ","_")}.docx" download>
+              📥 Download Report
+            </a>
+          `;
+          reportList.appendChild(box);
+        }
+      });
+    }
+
+    renderPage();
   </script>
 </body>
 </html>

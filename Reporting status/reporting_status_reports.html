@@ -5,117 +5,33 @@
   <title>Reporting Status Reports - Meteo Rwanda</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
-    .top-bar {
-      background: #4796d1;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      background: white;
-      align-items: center;
-    }
-    .logo img {
-      height: 80px;
-    }
-    .nav {
-      background: #008000;
-      color: white;
-      display: flex;
-      justify-content: center;
-      padding: 12px 0;
-    }
-    .nav a {
-      color: white;
-      margin: 0 20px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .nav a:hover {
-      text-decoration: underline;
-    }
-    .content {
-      padding: 40px;
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-left: 6px solid #008000;
-    }
-    h1 {
-      color: #008000;
-      margin-bottom: 20px;
-    }
-    .icon {
-      float: right;
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+    .top-bar { background: #4796d1; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    .header { display: flex; justify-content: space-between; padding: 20px; background: white; align-items: center; }
+    .logo img { height: 80px; }
+    .nav { background: #008000; color: white; display: flex; justify-content: center; padding: 12px 0; }
+    .nav a { color: white; margin: 0 20px; text-decoration: none; font-weight: bold; font-size: 16px; }
+    .nav a:hover { text-decoration: underline; }
+    .content { padding: 40px; max-width: 1000px; margin: auto; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-left: 6px solid #008000; }
+    h1 { color: #008000; margin-bottom: 20px; }
+    .icon { float: right; width: 80px; height: 80px; object-fit: contain; }
     .report-section { margin-top: 30px; }
-    .report-box {
-      background: #eafaf1;
-      padding: 20px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      border-left: 5px solid #008000;
-    }
+    .report-box { background: #eafaf1; padding: 20px; border: 1px solid #ccc; margin-bottom: 20px; border-left: 5px solid #008000; }
     .report-box h3 { margin-top: 0; }
-    .report-links a {
-      display: inline-block;
-      margin-right: 15px;
-      color: #006400;
-      font-weight: bold;
-      text-decoration: none;
-    }
+    .report-links a { display: inline-block; margin-right: 15px; color: #006400; font-weight: bold; text-decoration: none; }
     .report-links a:hover { text-decoration: underline; }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #008000;
-      color: white;
-      margin-top: 50px;
-    }
-    .chart-card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-left: 6px solid #4796d1;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
-      border-radius: 8px;
-      padding: 16px 16px 24px 16px;
-      margin: 24px 0 8px 0;
-    }
-    .chart-title {
-      margin: 0 0 6px 0;
-      color: #1f2937;
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .chart-subtitle {
-      margin: 0 0 12px 0;
-      color: #4b5563;
-      font-size: 14px;
-    }
-    .note {
-      font-size: 12px;
-      color: #374151;
-      margin-top: 8px;
-    }
+    footer { text-align: center; padding: 10px; background: #008000; color: white; margin-top: 50px; }
+    .chart-card { background: #ffffff; border: 1px solid #e5e7eb; border-left: 6px solid #4796d1; box-shadow: 0 4px 8px rgba(0,0,0,0.06); border-radius: 8px; padding: 16px 16px 24px 16px; margin: 24px 0 8px 0; }
+    .chart-title { margin: 0 0 6px 0; color: #1f2937; font-size: 18px; font-weight: 700; }
+    .chart-subtitle { margin: 0 0 12px 0; color: #4b5563; font-size: 14px; }
+    .note { font-size: 12px; color: #374151; margin-top: 8px; }
     .muted { color: #6b7280; }
   </style>
-  <!-- Chart.js CDN -->
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- SheetJS (xlsx.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -141,37 +57,14 @@
       <img src="reporting.jpeg" alt="Reporting Icon" class="icon">
     </h1>
 
-    <p>
-      This page contains monthly, quarterly, and annual reporting status reports from <strong>July 2025 to June 2026</strong>.
-    </p>
+    <p>This page contains monthly, quarterly, and annual reporting status reports from <strong>July 2025 to June 2026</strong>.</p>
 
     <!-- Chart Section -->
     <section class="chart-card" aria-label="Monthly reporting percentage chart">
       <h2 class="chart-title">Monthly Reporting Percentage (AWS & ARG)</h2>
       <p class="chart-subtitle muted">July 2025 – June 2026</p>
       <canvas id="reportingChart" height="90"></canvas>
-     
     </section>
-
-    <div class="report-section">
-      <div class="report-box">
-        <h3>July 2025</h3>
-        <div class="report-links">
-          <p>Status: <strong>Completed.</strong></p>
-          <a href="July/JULY.xlsm" download>📥 Excel</a>
-          <a href="July/REPORTING STATUS OF AWS & ARG BY JULY 2025.pdf" download>📄 PDF</a>
-        </div>
-      </div>
-
-      <div class="report-box">
-        <h3>August 2025</h3>
-        <div class="report-links">
-          <p>Status: <strong>Completed.</strong></p>
-          <a href="August/AUGUST.xlsm" download>📥 Excel</a>
-          <a href="August/REPORTING STATUS OF AWS & ARG BY AUGUST 2025.pdf" download>📄 PDF</a>
-        </div>
-      </div>
-    </div>
   </div>
 
   <footer>
@@ -179,59 +72,67 @@
   </footer>
 
   <script>
-    // Define months July 2025 → June 2026
     const months = [
       "July 2025", "August 2025", "September 2025", "October 2025",
       "November 2025", "December 2025", "January 2026", "February 2026",
       "March 2026", "April 2026", "May 2026", "June 2026"
     ];
 
-    // ===> ENTER your monthly percentages here (set to null if unknown)
-    const percentages = [
-      71.1,     // July 2025
-      67.95,    // August 2025
-      null,     // September 2025
-      null,     // October 2025
-      null,     // November 2025
-      null,     // December 2025
-      null,     // January 2026
-      null,     // February 2026
-      null,     // March 2026
-      null,     // April 2026
-      null,     // May 2026
-      null      // June 2026
-    ];
+    async function loadExcelData() {
+      const response = await fetch("Summary.xlsx"); // must be in same folder or adjust path
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-    const ctx = document.getElementById('reportingChart').getContext('2d');
+      // get "summary" sheet
+      const sheet = workbook.Sheets["Reportingstatus"];
+      if (!sheet) {
+        alert("Sheet 'summary' not found in Reportingstatus.xlsx");
+        return [];
+      }
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: months,
-        datasets: [{
-          label: 'Reporting %',
-          data: percentages,
-          borderColor: '#4796d1',
-          backgroundColor: 'rgba(71, 150, 209, 0.2)',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 4,
-          pointHoverRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            ticks: {
-              callback: (value) => value + "%"
+      // convert to JSON
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      // Extract percentages from column B (index 1) starting from row 2
+      const percentages = jsonData.slice(1, 13).map(row => row[1] ?? null);
+      return percentages;
+    }
+
+    async function renderChart() {
+      const percentages = await loadExcelData();
+
+      const ctx = document.getElementById("reportingChart").getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: months,
+          datasets: [{
+            label: "Reporting %",
+            data: percentages,
+            borderColor: "#4796d1",
+            backgroundColor: "rgba(71,150,209,0.2)",
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: (value) => value + "%"
+              }
             }
           }
         }
-      }
-    });
+      });
+    }
+
+    renderChart();
   </script>
 </body>
 </html>
