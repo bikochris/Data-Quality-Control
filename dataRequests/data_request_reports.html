@@ -93,7 +93,8 @@
           alert(data.error);
           return [];
         }
-        return data; // Data is already an array of numbers or null
+        // Ensure dataRequests is an array, default to empty if missing or invalid
+        return Array.isArray(data.dataRequests) ? data.dataRequests : [];
       } catch (error) {
         console.error('Error fetching Apps Script data:', error);
         alert('Failed to load data from Google Sheet');
