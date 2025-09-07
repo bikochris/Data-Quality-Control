@@ -31,8 +31,6 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- SheetJS -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -76,31 +74,42 @@
 
   <script>
     const months = [
-      'July 2025','August 2025','September 2025','October 2025',
-      'November 2025','December 2025','January 2026','February 2026',
-      'March 2026','April 2026','May 2026','June 2026'
+      'July 2025', 'August 2025', 'September 2025', 'October 2025',
+      'November 2025', 'December 2025', 'January 2026', 'February 2026',
+      'March 2026', 'April 2026', 'May 2026', 'June 2026'
     ];
 
-    async function loadExcelData() {
-      const response = await fetch("Summary.xlsx"); // must exist in same folder
-      const arrayBuffer = await response.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+    // Google Sheets API configuration
+    const SPREADSHEET_ID = 'AKfycbxQjSbCTiWMmEsdNybhTlZ3apz7R1-2rRYYQ0iEO-tqg4k072pmhblcpQuX8hfI_x0WKw'; // Replace with your Google Sheet ID
+    const API_KEY = 'https://script.google.com/macros/s/AKfycbxQjSbCTiWMmEsdNybhTlZ3apz7R1-2rRYYQ0iEO-tqg4k072pmhblcpQuX8hfI_x0WKw/exec'; // Replace with your Google Sheets API key
+    const SHEET_NAME = 'DataRequests';
+    const RANGE = 'B2:B13'; // Fetch data from column B, rows 2 to 13
 
-      const sheet = workbook.Sheets["DataRequests"];
-      if (!sheet) {
-        alert("Sheet 'summary' not found in DataRequests.xlsx");
+    async function loadGoogleSheetData() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!${RANGE}?key=${API_KEY}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (!data.values) {
+          alert("Sheet 'DataRequests' or range 'B2:B13' not found in the Google Sheet");
+          return [];
+        }
+        // Convert values to numbers, handle null/undefined
+        const requests = data.values.map(row => (row[0] ? Number(row[0]) : null));
+        return requests;
+      } catch (error) {
+        console.error('Error fetching Google Sheet data:', error);
+        alert('Failed to load data from Google Sheet');
         return [];
       }
-
-      // Convert sheet to raw array
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      // Take column B values from row 2 to 13
-      const requests = jsonData.slice(1, 13).map(row => row[1] ?? null);
-      return requests;
     }
 
     async function renderPage() {
-      const requests = await loadExcelData();
+      const requests = await loadGoogleSheetData();
 
       // === Chart ===
       const ctx = document.getElementById("dataRequestChart").getContext("2d");
