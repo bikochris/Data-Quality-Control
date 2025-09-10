@@ -2,44 +2,37 @@
 let awsStations = [];
 let argStations = [];
 
-// Load and parse Excel file with AWS and ARG sheets
-async function loadStationsFromExcel() {
+// Load and parse data from Google Sheet
+async function loadStationsFromGoogleSheet() {
   try {
-    const response = await fetch('stations.xlsx');
-    const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-    
-    // Parse AWS sheet
-    const awsSheet = workbook.Sheets['AWS'];
-    if (awsSheet) {
-      const awsData = XLSX.utils.sheet_to_json(awsSheet, { header: 1 });
-      awsStations = awsData.slice(1).map(row => ({
-        name: row[0], // Column A
-        province: row[1], // Column B
-        district: row[2], // Column C
-        sensors: parseSensors(row[3] || ''), // Column D
-        activities: parseActivities(row[4] || '').reverse() // Column E, reversed for recent first
-      }));
-      console.log('AWS Stations:', awsStations); // Debug log
-      populateAWSProvinces();
-    }
+    const response = await fetch('https://script.google.com/macros/s/AKfycbwp2T46zlOD9rJgBMjgW1ZrTi2iVrWZUvGHDUTKIb_siZ2XL8AwDFIz5nblZ5aPGzuu/exec'); // Replace with your deployed URL
+    const data = await response.json();
+    console.log('Raw Data from Google Sheet:', data); // Debug log
 
-    // Parse ARG sheet
-    const argSheet = workbook.Sheets['ARG'];
-    if (argSheet) {
-      const argData = XLSX.utils.sheet_to_json(argSheet, { header: 1 });
-      argStations = argData.slice(1).map(row => ({
-        name: row[0], // Column A
-        province: row[1], // Column B
-        district: row[2], // Column C
-        sensors: parseSensors(row[3] || ''), // Column D
-        activities: parseActivities(row[4] || '').reverse() // Column E, reversed for recent first
-      }));
-      console.log('ARG Stations:', argStations); // Debug log
-      populateARGProvinces();
-    }
+    // Process AWS data
+    awsStations = data.aws.map(row => ({
+      name: row.name,
+      province: row.province,
+      district: row.district,
+      sensors: parseSensors(row.sensors || ''),
+      activities: parseActivities(row.activities || '').reverse()
+    }));
+    console.log('AWS Stations:', awsStations); // Debug log
+
+    // Process ARG data
+    argStations = data.arg.map(row => ({
+      name: row.name,
+      province: row.province,
+      district: row.district,
+      sensors: parseSensors(row.sensors || ''),
+      activities: parseActivities(row.activities || '').reverse()
+    }));
+    console.log('ARG Stations:', argStations); // Debug log
+
+    populateAWSProvinces();
+    populateARGProvinces();
   } catch (error) {
-    console.error('Error loading stations.xlsx:', error);
+    console.error('Error loading data from Google Sheet:', error);
   }
 }
 
@@ -331,5 +324,5 @@ function clearARGStationInfo() {
 
 // Initialize on page load
 window.onload = async function() {
-  await loadStationsFromExcel();
+  await loadStationsFromGoogleSheet();
 };
