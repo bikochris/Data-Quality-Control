@@ -33,9 +33,9 @@
       padding: 20px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border-left: 5px solid #008000;
-      max-width: 400px; /* Reasonable width for selector */
-      margin: 0 auto; /* Center horizontally */
-      text-align: center; /* Center content inside */
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
     }
     .aws-info, .arg-info {
       background: white;
@@ -43,8 +43,8 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       border-left: 5px solid #008000;
       overflow-x: auto;
-      max-width: 100%; /* Ensure container fits window */
-      display: none; /* Initially hidden */
+      max-width: 100%;
+      display: none;
     }
     h2 {
       color: #008000;
@@ -94,26 +94,26 @@
     }
     .station-type-selector select, .aws-info select, .arg-info select {
       width: 100%;
-      max-width: 350px; /* Reasonable width for dropdowns */
-      margin: 10px auto; /* Center dropdowns */
+      max-width: 350px;
+      margin: 10px auto;
       padding: 8px;
       border: 1px solid #008000;
       border-radius: 4px;
-      display: block; /* Ensure block display for centering */
+      display: block;
     }
     .aws-info table, .arg-info table {
       width: 100%;
-      max-width: 100%; /* Ensure tables fit container */
+      max-width: 100%;
       margin-top: 10px;
       border-collapse: collapse;
       display: none;
-      table-layout: auto; /* Allow columns to adjust naturally */
+      table-layout: auto;
     }
     .aws-info th, .aws-info td, .arg-info th, .arg-info td {
       border: 1px solid #008000;
       padding: 8px;
       text-align: left;
-      white-space: nowrap; /* Prevent text wrapping where possible */
+      white-space: nowrap;
     }
     .aws-info th, .arg-info th {
       background-color: #f1fdf1;
@@ -151,22 +151,24 @@
         width: 100%;
       }
       .station-type-selector {
-        max-width: 100%; /* Full width on smaller screens */
+        max-width: 100%;
         padding: 15px;
       }
       .station-type-selector select, .aws-info select, .arg-info select {
-        max-width: 100%; /* Full width on smaller screens */
+        max-width: 100%;
       }
       .aws-info, .arg-info {
         padding: 15px;
       }
     }
   </style>
-  <!-- Include Papa Parse CDN -->
+  <!-- Include Papa Parse CDN (optional, if still needed for other features) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   <!-- Include jsPDF with autoTable CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+  <!-- Include XLSX CDN for Excel parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
   <header>
@@ -192,11 +194,11 @@
           <option value="">Select Province</option>
         </select>
         <label for="aws-district">District:</label>
-        <select id="aws-district" onchange="updateAWSOptions('station')" disabled>
+        <select id="aws-district" onchange="updateAWSOptions('station')">
           <option value="">Select District</option>
         </select>
         <label for="aws-station">Station:</label>
-        <select id="aws-station" onchange="displayAWSStationInfo()" disabled>
+        <select id="aws-station" onchange="displayAWSStationInfo()">
           <option value="">Select Station</option>
         </select>
         <div id="aws-station-details" style="display: none;">
@@ -204,7 +206,10 @@
           <table id="aws-sensor-table">
             <thead>
               <tr>
-                <th>Available Sensors/Parameters</th>
+                <th>Available Sensor</th>
+                <th>Installation Date</th>
+                <th>Calibration Date</th>
+                <th>Serial Number</th>
                 <th>Status</th>
                 <th>Checked On</th>
               </tr>
@@ -231,11 +236,11 @@
           <option value="">Select Province</option>
         </select>
         <label for="arg-district">District:</label>
-        <select id="arg-district" onchange="updateARGOptions('station')" disabled>
+        <select id="arg-district" onchange="updateARGOptions('station')">
           <option value="">Select District</option>
         </select>
         <label for="arg-station">Station:</label>
-        <select id="arg-station" onchange="displayARGStationInfo()" disabled>
+        <select id="arg-station" onchange="displayARGStationInfo()">
           <option value="">Select Station</option>
         </select>
         <div id="arg-station-details" style="display: none;">
@@ -243,7 +248,10 @@
           <table id="arg-sensor-table">
             <thead>
               <tr>
-                <th>Available Sensors/Parameters</th>
+                <th>Available Sensor</th>
+                <th>Installation Date</th>
+                <th>Calibration Date</th>
+                <th>Serial Number</th>
                 <th>Status</th>
                 <th>Checked On</th>
               </tr>
@@ -274,24 +282,22 @@
       awsInfo.style.display = 'none';
       argInfo.style.display = 'none';
 
-      // Reset dropdowns and tables
-      document.getElementById('aws-province').value = '';
-      document.getElementById('aws-district').value = '';
-      document.getElementById('aws-station').value = '';
-      document.getElementById('aws-district').disabled = true;
-      document.getElementById('aws-station').disabled = true;
-      document.getElementById('aws-station-details').style.display = 'none';
-      document.getElementById('arg-province').value = '';
-      document.getElementById('arg-district').value = '';
-      document.getElementById('arg-station').value = '';
-      document.getElementById('arg-district').disabled = true;
-      document.getElementById('arg-station').disabled = true;
-      document.getElementById('arg-station-details').style.display = 'none';
-
-      // Show the selected section
+      // Reset only the selected section
       if (stationType === 'aws') {
+        document.getElementById('aws-province').value = '';
+        document.getElementById('aws-district').value = '';
+        document.getElementById('aws-station').value = '';
+        document.getElementById('aws-district').disabled = true;
+        document.getElementById('aws-station').disabled = true;
+        document.getElementById('aws-station-details').style.display = 'none';
         awsInfo.style.display = 'block';
       } else if (stationType === 'arg') {
+        document.getElementById('arg-province').value = '';
+        document.getElementById('arg-district').value = '';
+        document.getElementById('arg-station').value = '';
+        document.getElementById('arg-district').disabled = true;
+        document.getElementById('arg-station').disabled = true;
+        document.getElementById('arg-station-details').style.display = 'none';
         argInfo.style.display = 'block';
       }
     }
