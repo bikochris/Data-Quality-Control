@@ -143,6 +143,17 @@
     .download-btn:hover:not(:disabled) {
       background-color: #006400;
     }
+    .error-message {
+      display: none;
+      color: red;
+      text-align: center;
+      padding: 10px;
+      background-color: #ffebee;
+      border: 1px solid #ef9a9a;
+      border-radius: 4px;
+      margin: 10px auto;
+      max-width: 400px;
+    }
     @media (max-width: 768px) {
       .container {
         padding: 10px;
@@ -160,6 +171,9 @@
       .aws-info, .arg-info {
         padding: 15px;
       }
+      .error-message {
+        max-width: 100%;
+      }
     }
   </style>
   <!-- Include Papa Parse CDN (optional, if still needed for other features) -->
@@ -176,6 +190,8 @@
   </header>
   <div class="container">
     <div class="left-panel">
+      <!-- Error Message Display -->
+      <div id="error-message" class="error-message"></div>
       <!-- Station Type Selector -->
       <div class="station-type-selector">
         <h2>Select Station Type</h2>
@@ -300,6 +316,19 @@
         document.getElementById('arg-station-details').style.display = 'none';
         argInfo.style.display = 'block';
       }
+    }
+
+    // Function to display error messages
+    function showErrorMessage(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    // Function to hide error messages
+    function hideErrorMessage() {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.style.display = 'none';
     }
   </script>
   <script src="tables.js"></script>

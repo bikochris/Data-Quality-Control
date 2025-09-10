@@ -4,35 +4,46 @@ let argStations = [];
 
 // Load and parse data from Google Sheet
 async function loadStationsFromGoogleSheet() {
+  const errorDiv = document.getElementById('error-message');
+  errorDiv.style.display = 'none'; // Hide any previous error
+
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwp2T46zlOD9rJgBMjgW1ZrTi2iVrWZUvGHDUTKIb_siZ2XL8AwDFIz5nblZ5aPGzuu/exec'); // Replace with your deployed URL
+    const response = await fetch('https://script.google.com/macros/s/AKfycbz-b_OiY2utpKTOANtvdQvx0MUvH59vfLM6gTOj3qxXq9WX0iJrLMbv7r6HGIhm_X-zEQ/exec'); // Replace with your deployed URL
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const data = await response.json();
     console.log('Raw Data from Google Sheet:', data); // Debug log
 
     // Process AWS data
-    awsStations = data.aws.map(row => ({
-      name: row.name,
-      province: row.province,
-      district: row.district,
+    awsStations = data.aws && data.aws.length > 0 ? data.aws.map(row => ({
+      name: row.name || '',
+      province: row.province || '',
+      district: row.district || '',
       sensors: parseSensors(row.sensors || ''),
       activities: parseActivities(row.activities || '').reverse()
-    }));
+    })) : [];
     console.log('AWS Stations:', awsStations); // Debug log
 
     // Process ARG data
-    argStations = data.arg.map(row => ({
-      name: row.name,
-      province: row.province,
-      district: row.district,
+    argStations = data.arg && data.arg.length > 0 ? data.arg.map(row => ({
+      name: row.name || '',
+      province: row.province || '',
+      district: row.district || '',
       sensors: parseSensors(row.sensors || ''),
       activities: parseActivities(row.activities || '').reverse()
-    }));
+    })) : [];
     console.log('ARG Stations:', argStations); // Debug log
+
+    if (awsStations.length === 0 || argStations.length === 0) {
+      throw new Error('No data found in AWS or ARG sheets.');
+    }
 
     populateAWSProvinces();
     populateARGProvinces();
   } catch (error) {
     console.error('Error loading data from Google Sheet:', error);
+    showErrorMessage(`Error loading data: ${error.message}. Please check the console for details.`);
   }
 }
 
@@ -58,13 +69,18 @@ function parseActivities(activityData) {
 function populateAWSProvinces() {
   const provinceSelect = document.getElementById('aws-province');
   provinceSelect.innerHTML = '<option value="">Select Province</option>';
-  const provinces = [...new Set(awsStations.map(s => s.province))];
-  provinces.forEach(province => {
-    const option = document.createElement('option');
-    option.value = province;
-    option.textContent = province;
-    provinceSelect.appendChild(option);
-  });
+  const provinces = [...new Set(awsStations.map(s => s.province))].filter(p => p); // Filter out empty provinces
+  if (provinces.length === 0) {
+    console.warn('No provinces found in AWS data.');
+    showErrorMessage('No provinces available for AWS. Check the Google Sheet data.');
+  } else {
+    provinces.forEach(province => {
+      const option = document.createElement('option');
+      option.value = province;
+      option.textContent = province;
+      provinceSelect.appendChild(option);
+    });
+  }
 }
 
 // Update AWS options (districts or stations)
@@ -89,28 +105,38 @@ function updateAWSOptions(level) {
     if (!validProvince) {
       console.warn(`Province "${province}" not found in AWS data.`);
       districtSelect.disabled = true;
+      showErrorMessage(`Province "${province}" not found in AWS data.`);
       return;
     }
 
     districtSelect.disabled = false;
     if (level === 'district') {
-      const districts = [...new Set(awsStations.filter(s => s.province === province).map(s => s.district))];
-      districts.forEach(district => {
-        const option = document.createElement('option');
-        option.value = district;
-        option.textContent = district;
-        districtSelect.appendChild(option);
-      });
+      const districts = [...new Set(awsStations.filter(s => s.province === province).map(s => s.district))].filter(d => d);
+      if (districts.length === 0) {
+        console.warn(`No districts found for province ${province} in AWS data.`);
+        showErrorMessage(`No districts available for province ${province} in AWS.`);
+      } else {
+        districts.forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
     } else if (level === 'station') {
       const district = districtSelect.value;
       console.log(`Filtering stations for province: ${province}, district: ${district}`);
       if (district) {
         const filteredStations = awsStations
           .filter(s => s.province === province && s.district === district)
-          .map(s => s.name);
+          .map(s => s.name)
+          .filter(s => s);
         console.log('Filtered Stations:', filteredStations);
         stationSelect.innerHTML = '<option value="">Select Station</option>';
-        if (filteredStations.length > 0) {
+        if (filteredStations.length === 0) {
+          console.warn(`No stations found for district ${district} in province ${province}.`);
+          showErrorMessage(`No stations available for district ${district} in province ${province}.`);
+        } else {
           filteredStations.forEach(station => {
             const option = document.createElement('option');
             option.value = station;
@@ -118,8 +144,6 @@ function updateAWSOptions(level) {
             stationSelect.appendChild(option);
           });
           stationSelect.disabled = false;
-        } else {
-          console.warn(`No stations found for district ${district} in province ${province}.`);
         }
       }
     }
@@ -130,13 +154,18 @@ function updateAWSOptions(level) {
 function populateARGProvinces() {
   const provinceSelect = document.getElementById('arg-province');
   provinceSelect.innerHTML = '<option value="">Select Province</option>';
-  const provinces = [...new Set(argStations.map(s => s.province))];
-  provinces.forEach(province => {
-    const option = document.createElement('option');
-    option.value = province;
-    option.textContent = province;
-    provinceSelect.appendChild(option);
-  });
+  const provinces = [...new Set(argStations.map(s => s.province))].filter(p => p); // Filter out empty provinces
+  if (provinces.length === 0) {
+    console.warn('No provinces found in ARG data.');
+    showErrorMessage('No provinces available for ARG. Check the Google Sheet data.');
+  } else {
+    provinces.forEach(province => {
+      const option = document.createElement('option');
+      option.value = province;
+      option.textContent = province;
+      provinceSelect.appendChild(option);
+    });
+  }
 }
 
 // Update ARG options (districts or stations)
@@ -161,28 +190,38 @@ function updateARGOptions(level) {
     if (!validProvince) {
       console.warn(`Province "${province}" not found in ARG data.`);
       districtSelect.disabled = true;
+      showErrorMessage(`Province "${province}" not found in ARG data.`);
       return;
     }
 
     districtSelect.disabled = false;
     if (level === 'district') {
-      const districts = [...new Set(argStations.filter(s => s.province === province).map(s => s.district))];
-      districts.forEach(district => {
-        const option = document.createElement('option');
-        option.value = district;
-        option.textContent = district;
-        districtSelect.appendChild(option);
-      });
+      const districts = [...new Set(argStations.filter(s => s.province === province).map(s => s.district))].filter(d => d);
+      if (districts.length === 0) {
+        console.warn(`No districts found for province ${province} in ARG data.`);
+        showErrorMessage(`No districts available for province ${province} in ARG.`);
+      } else {
+        districts.forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
     } else if (level === 'station') {
       const district = districtSelect.value;
       console.log(`Filtering stations for province: ${province}, district: ${district}`);
       if (district) {
         const filteredStations = argStations
           .filter(s => s.province === province && s.district === district)
-          .map(s => s.name);
+          .map(s => s.name)
+          .filter(s => s);
         console.log('Filtered Stations:', filteredStations);
         stationSelect.innerHTML = '<option value="">Select Station</option>';
-        if (filteredStations.length > 0) {
+        if (filteredStations.length === 0) {
+          console.warn(`No stations found for district ${district} in province ${province}.`);
+          showErrorMessage(`No stations available for district ${district} in province ${province}.`);
+        } else {
           filteredStations.forEach(station => {
             const option = document.createElement('option');
             option.value = station;
@@ -190,8 +229,6 @@ function updateARGOptions(level) {
             stationSelect.appendChild(option);
           });
           stationSelect.disabled = false;
-        } else {
-          console.warn(`No stations found for district ${district} in province ${province}.`);
         }
       }
     }
@@ -245,6 +282,8 @@ function displayAWSStationInfo() {
     } else {
       activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
     }
+  } else if (stationName) {
+    showErrorMessage(`Station "${stationName}" not found in AWS data.`);
   }
 }
 
@@ -295,6 +334,8 @@ function displayARGStationInfo() {
     } else {
       activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
     }
+  } else if (stationName) {
+    showErrorMessage(`Station "${stationName}" not found in ARG data.`);
   }
 }
 
