@@ -2,67 +2,44 @@
 let awsStations = [];
 let argStations = [];
 
-// Load and parse data from Google Sheet
-async function loadStationsFromGoogleSheet() {
-  const errorDiv = document.getElementById('error-message');
-  errorDiv.style.display = 'none'; // Hide any previous error
-
+// Load and parse Excel file with AWS and ARG sheets
+async function loadStationsFromExcel() {
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbxfWDA1XIb1RwCfeA7cfTHmdLFGDLKfILDCt11lLt9Pv5Az3p8DqCKx39dK1vhiHulV2Q/exec', {
-      method: 'GET',
-      mode: 'cors', // Explicitly set CORS mode
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
-    }
-    const data = await response.json();
-    console.log('Raw Data from Google Sheet:', data); // Debug log
-
-    // Check for errors in the response and display exact message
-    if (data.error) {
-      throw new Error(data.error);
-    }
-
-    // Process AWS data
-    awsStations = data.aws && data.aws.length > 0 ? data.aws.map(row => ({
-      name: row.name || '',
-      province: row.province || '',
-      district: row.district || '',
-      sensors: parseSensors(row.sensors || ''),
-      activities: parseActivities(row.activities || '').reverse()
-    })) : [];
-    console.log('AWS Stations:', awsStations); // Debug log
-
-    // Process ARG data
-    argStations = data.arg && data.arg.length > 0 ? data.arg.map(row => ({
-      name: row.name || '',
-      province: row.province || '',
-      district: row.district || '',
-      sensors: parseSensors(row.sensors || ''),
-      activities: parseActivities(row.activities || '').reverse()
-    })) : [];
-    console.log('ARG Stations:', argStations); // Debug log
-
-    if (awsStations.length === 0 || argStations.length === 0) {
-      throw new Error('No data found in AWS or ARG sheets.');
+    const response = await fetch('stations.xlsx');
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    
+    // Parse AWS sheet
+    const awsSheet = workbook.Sheets['AWS'];
+    if (awsSheet) {
+      const awsData = XLSX.utils.sheet_to_json(awsSheet, { header: 1 });
+      awsStations = awsData.slice(1).map(row => ({
+        name: row[0], // Column A
+        province: row[1], // Column B
+        district: row[2], // Column C
+        sensors: parseSensors(row[3] || ''), // Column D
+        activities: parseActivities(row[4] || '').reverse() // Column E, reversed for recent first
+      }));
+      console.log('AWS Stations:', awsStations); // Debug log
+      populateAWSProvinces();
     }
 
-    populateAWSProvinces();
-    populateARGProvinces();
+    // Parse ARG sheet
+    const argSheet = workbook.Sheets['ARG'];
+    if (argSheet) {
+      const argData = XLSX.utils.sheet_to_json(argSheet, { header: 1 });
+      argStations = argData.slice(1).map(row => ({
+        name: row[0], // Column A
+        province: row[1], // Column B
+        district: row[2], // Column C
+        sensors: parseSensors(row[3] || ''), // Column D
+        activities: parseActivities(row[4] || '').reverse() // Column E, reversed for recent first
+      }));
+      console.log('ARG Stations:', argStations); // Debug log
+      populateARGProvinces();
+    }
   } catch (error) {
-    console.error('Error loading data from Google Sheet:', error);
-    let errorMessage = 'Failed to fetch data. ';
-    if (error.message.includes('HTTP error')) {
-      errorMessage += `Server responded with: ${error.message}`;
-    } else if (error.message.includes('Failed to fetch')) {
-      errorMessage += 'Possible network issue or invalid URL. Check your internet connection or the Apps Script URL.';
-    } else {
-      errorMessage += error.message;
-    }
-    showErrorMessage(errorMessage); // Display the detailed error message
+    console.error('Error loading stations.xlsx:', error);
   }
 }
 
@@ -88,18 +65,13 @@ function parseActivities(activityData) {
 function populateAWSProvinces() {
   const provinceSelect = document.getElementById('aws-province');
   provinceSelect.innerHTML = '<option value="">Select Province</option>';
-  const provinces = [...new Set(awsStations.map(s => s.province))].filter(p => p); // Filter out empty provinces
-  if (provinces.length === 0) {
-    console.warn('No provinces found in AWS data.');
-    showErrorMessage('No provinces available for AWS. Check the Google Sheet data.');
-  } else {
-    provinces.forEach(province => {
-      const option = document.createElement('option');
-      option.value = province;
-      option.textContent = province;
-      provinceSelect.appendChild(option);
-    });
-  }
+  const provinces = [...new Set(awsStations.map(s => s.province))];
+  provinces.forEach(province => {
+    const option = document.createElement('option');
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
 }
 
 // Update AWS options (districts or stations)
@@ -124,38 +96,28 @@ function updateAWSOptions(level) {
     if (!validProvince) {
       console.warn(`Province "${province}" not found in AWS data.`);
       districtSelect.disabled = true;
-      showErrorMessage(`Province "${province}" not found in AWS data.`);
       return;
     }
 
     districtSelect.disabled = false;
     if (level === 'district') {
-      const districts = [...new Set(awsStations.filter(s => s.province === province).map(s => s.district))].filter(d => d);
-      if (districts.length === 0) {
-        console.warn(`No districts found for province ${province} in AWS data.`);
-        showErrorMessage(`No districts available for province ${province} in AWS.`);
-      } else {
-        districts.forEach(district => {
-          const option = document.createElement('option');
-          option.value = district;
-          option.textContent = district;
-          districtSelect.appendChild(option);
-        });
-      }
+      const districts = [...new Set(awsStations.filter(s => s.province === province).map(s => s.district))];
+      districts.forEach(district => {
+        const option = document.createElement('option');
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+      });
     } else if (level === 'station') {
       const district = districtSelect.value;
       console.log(`Filtering stations for province: ${province}, district: ${district}`);
       if (district) {
         const filteredStations = awsStations
           .filter(s => s.province === province && s.district === district)
-          .map(s => s.name)
-          .filter(s => s);
+          .map(s => s.name);
         console.log('Filtered Stations:', filteredStations);
         stationSelect.innerHTML = '<option value="">Select Station</option>';
-        if (filteredStations.length === 0) {
-          console.warn(`No stations found for district ${district} in province ${province}.`);
-          showErrorMessage(`No stations available for district ${district} in province ${province}.`);
-        } else {
+        if (filteredStations.length > 0) {
           filteredStations.forEach(station => {
             const option = document.createElement('option');
             option.value = station;
@@ -163,6 +125,8 @@ function updateAWSOptions(level) {
             stationSelect.appendChild(option);
           });
           stationSelect.disabled = false;
+        } else {
+          console.warn(`No stations found for district ${district} in province ${province}.`);
         }
       }
     }
@@ -173,18 +137,13 @@ function updateAWSOptions(level) {
 function populateARGProvinces() {
   const provinceSelect = document.getElementById('arg-province');
   provinceSelect.innerHTML = '<option value="">Select Province</option>';
-  const provinces = [...new Set(argStations.map(s => s.province))].filter(p => p); // Filter out empty provinces
-  if (provinces.length === 0) {
-    console.warn('No provinces found in ARG data.');
-    showErrorMessage('No provinces available for ARG. Check the Google Sheet data.');
-  } else {
-    provinces.forEach(province => {
-      const option = document.createElement('option');
-      option.value = province;
-      option.textContent = province;
-      provinceSelect.appendChild(option);
-    });
-  }
+  const provinces = [...new Set(argStations.map(s => s.province))];
+  provinces.forEach(province => {
+    const option = document.createElement('option');
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
 }
 
 // Update ARG options (districts or stations)
@@ -209,38 +168,28 @@ function updateARGOptions(level) {
     if (!validProvince) {
       console.warn(`Province "${province}" not found in ARG data.`);
       districtSelect.disabled = true;
-      showErrorMessage(`Province "${province}" not found in ARG data.`);
       return;
     }
 
     districtSelect.disabled = false;
     if (level === 'district') {
-      const districts = [...new Set(argStations.filter(s => s.province === province).map(s => s.district))].filter(d => d);
-      if (districts.length === 0) {
-        console.warn(`No districts found for province ${province} in ARG data.`);
-        showErrorMessage(`No districts available for province ${province} in ARG.`);
-      } else {
-        districts.forEach(district => {
-          const option = document.createElement('option');
-          option.value = district;
-          option.textContent = district;
-          districtSelect.appendChild(option);
-        });
-      }
+      const districts = [...new Set(argStations.filter(s => s.province === province).map(s => s.district))];
+      districts.forEach(district => {
+        const option = document.createElement('option');
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+      });
     } else if (level === 'station') {
       const district = districtSelect.value;
       console.log(`Filtering stations for province: ${province}, district: ${district}`);
       if (district) {
         const filteredStations = argStations
           .filter(s => s.province === province && s.district === district)
-          .map(s => s.name)
-          .filter(s => s);
+          .map(s => s.name);
         console.log('Filtered Stations:', filteredStations);
         stationSelect.innerHTML = '<option value="">Select Station</option>';
-        if (filteredStations.length === 0) {
-          console.warn(`No stations found for district ${district} in province ${province}.`);
-          showErrorMessage(`No stations available for district ${district} in province ${province}.`);
-        } else {
+        if (filteredStations.length > 0) {
           filteredStations.forEach(station => {
             const option = document.createElement('option');
             option.value = station;
@@ -248,6 +197,8 @@ function updateARGOptions(level) {
             stationSelect.appendChild(option);
           });
           stationSelect.disabled = false;
+        } else {
+          console.warn(`No stations found for district ${district} in province ${province}.`);
         }
       }
     }
@@ -301,8 +252,6 @@ function displayAWSStationInfo() {
     } else {
       activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
     }
-  } else if (stationName) {
-    showErrorMessage(`Station "${stationName}" not found in AWS data.`);
   }
 }
 
@@ -353,8 +302,6 @@ function displayARGStationInfo() {
     } else {
       activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
     }
-  } else if (stationName) {
-    showErrorMessage(`Station "${stationName}" not found in ARG data.`);
   }
 }
 
@@ -384,5 +331,5 @@ function clearARGStationInfo() {
 
 // Initialize on page load
 window.onload = async function() {
-  await loadStationsFromGoogleSheet();
+  await loadStationsFromExcel();
 };
