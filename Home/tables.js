@@ -8,12 +8,23 @@ async function loadStationsFromGoogleSheet() {
   errorDiv.style.display = 'none'; // Hide any previous error
 
   try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbz-b_OiY2utpKTOANtvdQvx0MUvH59vfLM6gTOj3qxXq9WX0iJrLMbv7r6HGIhm_X-zEQ/exec'); // Replace with your deployed URL
+    const response = await fetch('https://script.google.com/macros/s/AKfycbxfWDA1XIb1RwCfeA7cfTHmdLFGDLKfILDCt11lLt9Pv5Az3p8DqCKx39dK1vhiHulV2Q/exec', {
+      method: 'GET',
+      mode: 'cors', // Explicitly set CORS mode
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
     }
     const data = await response.json();
     console.log('Raw Data from Google Sheet:', data); // Debug log
+
+    // Check for errors in the response and display exact message
+    if (data.error) {
+      throw new Error(data.error);
+    }
 
     // Process AWS data
     awsStations = data.aws && data.aws.length > 0 ? data.aws.map(row => ({
@@ -43,7 +54,15 @@ async function loadStationsFromGoogleSheet() {
     populateARGProvinces();
   } catch (error) {
     console.error('Error loading data from Google Sheet:', error);
-    showErrorMessage(`Error loading data: ${error.message}. Please check the console for details.`);
+    let errorMessage = 'Failed to fetch data. ';
+    if (error.message.includes('HTTP error')) {
+      errorMessage += `Server responded with: ${error.message}`;
+    } else if (error.message.includes('Failed to fetch')) {
+      errorMessage += 'Possible network issue or invalid URL. Check your internet connection or the Apps Script URL.';
+    } else {
+      errorMessage += error.message;
+    }
+    showErrorMessage(errorMessage); // Display the detailed error message
   }
 }
 
