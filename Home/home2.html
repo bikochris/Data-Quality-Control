@@ -1,4 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Stations Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        select {
+            padding: 8px;
+            margin-right: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+        }
+        select:disabled {
+            background-color: #f9f9f9;
+            color: #999;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .suspected {
+            background-color: #fff3cd;
+            color: #856404;
+            font-weight: bold;
+        }
+        .no-data {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Stations Dashboard</h1>
+    
+    <div class="section">
+        <h2>AWS Stations</h2>
+        <select id="aws-province" onchange="updateAWSOptions('district')">
+            <option value="">Select Province</option>
+        </select>
+        <select id="aws-district" disabled onchange="updateAWSOptions('station')">
+            <option value="">Select District</option>
+        </select>
+        <select id="aws-station" disabled onchange="displayAWSStationInfo()">
+            <option value="">Select Station</option>
+        </select>
+        
+        <div id="aws-station-details" class="hidden">
+            <h3>Station Details</h3>
+            <table id="aws-sensor-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Sensor Type</th>
+                        <th>Install Date</th>
+                        <th>Calibration Date</th>
+                        <th>Serial Number</th>
+                        <th>Status</th>
+                        <th>Checked On</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="aws-activity-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>ARG Stations</h2>
+        <select id="arg-province" onchange="updateARGOptions('district')">
+            <option value="">Select Province</option>
+        </select>
+        <select id="arg-district" disabled onchange="updateARGOptions('station')">
+            <option value="">Select District</option>
+        </select>
+        <select id="arg-station" disabled onchange="displayARGStationInfo()">
+            <option value="">Select Station</option>
+        </select>
+        
+        <div id="arg-station-details" class="hidden">
+            <h3>Station Details</h3>
+            <table id="arg-sensor-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Sensor Type</th>
+                        <th>Install Date</th>
+                        <th>Calibration Date</th>
+                        <th>Serial Number</th>
+                        <th>Status</th>
+                        <th>Checked On</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table id="arg-activity-table" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
+    <script>
         // Apps Script web app URL
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz6xtA3wvDVC01Or9WrWLtzrwmjT51luN0dDPyCH5-eC5BA-FZL3kM_ewh7JtwCM9NK4w/exec';
 
@@ -254,131 +408,134 @@
             }
         }
 
-       // Display AWS station information
-function displayAWSStationInfo() {
-  const stationName = document.getElementById('aws-station').value;
-  const station = awsStations.find(s => s.name === stationName);
-  const detailsDiv = document.getElementById('aws-station-details');
-  const sensorTable = document.getElementById('aws-sensor-table');
-  const activityTable = document.getElementById('aws-activity-table');
-  const sensorTableBody = sensorTable.getElementsByTagName('tbody')[0];
-  const activityTableBody = activityTable.getElementsByTagName('tbody')[0];
+        // Display AWS station information
+        function displayAWSStationInfo() {
+            const stationName = document.getElementById('aws-station').value;
+            const station = awsStations.find(s => s.name === stationName);
+            const detailsDiv = document.getElementById('aws-station-details');
+            const sensorTable = document.getElementById('aws-sensor-table');
+            const activityTable = document.getElementById('aws-activity-table');
+            const sensorTableBody = sensorTable.querySelector('tbody');
+            const activityTableBody = activityTable.querySelector('tbody');
 
-  clearAWSStationInfo();
+            clearAWSStationInfo();
 
-  if (station) {
-    detailsDiv.style.display = 'block';
-    sensorTable.style.display = 'table';
-    activityTable.style.display = 'table';
+            if (station) {
+                detailsDiv.classList.remove('hidden');
+                sensorTable.classList.remove('hidden');
+                activityTable.classList.remove('hidden');
 
-    if (station.sensors.length > 0) {
-      station.sensors.forEach(sensor => {
-        const row = document.createElement('tr');
-        const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
-        row.innerHTML = `
-          <td>${sensor.type || 'N/A'}</td>
-          <td>${sensor.installDate || 'N/A'}</td>
-          <td>${sensor.calibDate || 'N/A'}</td>
-          <td>${sensor.serialNumber || 'N/A'}</td>
-          <td class="${statusClass}">${sensor.status || 'N/A'}</td>
-          <td>${sensor.checkedOn || 'N/A'}</td>
-        `;
-        sensorTableBody.appendChild(row);
-      });
-    } else {
-      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
-    }
+                if (station.sensors.length > 0) {
+                    station.sensors.forEach(sensor => {
+                        const row = document.createElement('tr');
+                        const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
+                        row.innerHTML = `
+                            <td>${sensor.type || 'N/A'}</td>
+                            <td>${sensor.installDate || 'N/A'}</td>
+                            <td>${sensor.calibDate || 'N/A'}</td>
+                            <td>${sensor.serialNumber || 'N/A'}</td>
+                            <td class="${statusClass}">${sensor.status || 'N/A'}</td>
+                            <td>${sensor.checkedOn || 'N/A'}</td>
+                        `;
+                        sensorTableBody.appendChild(row);
+                    });
+                } else {
+                    sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
+                }
 
-    if (station.activities.length > 0) {
-      station.activities.forEach(activity => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${activity.date || 'N/A'}</td>
-          <td>${activity.activity || 'N/A'}</td>
-        `;
-        activityTableBody.appendChild(row);
-      });
-    } else {
-      activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
-    }
-  }
-}
+                if (station.activities.length > 0) {
+                    station.activities.forEach(activity => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${activity.date || 'N/A'}</td>
+                            <td>${activity.activity || 'N/A'}</td>
+                        `;
+                        activityTableBody.appendChild(row);
+                    });
+                } else {
+                    activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
+                }
+            }
+        }
 
-// Display ARG station information
-function displayARGStationInfo() {
-  const stationName = document.getElementById('arg-station').value;
-  const station = argStations.find(s => s.name === stationName);
-  const detailsDiv = document.getElementById('arg-station-details');
-  const sensorTable = document.getElementById('arg-sensor-table');
-  const activityTable = document.getElementById('arg-activity-table');
-  const sensorTableBody = sensorTable.getElementsByTagName('tbody')[0];
-  const activityTableBody = activityTable.getElementsByTagName('tbody')[0];
+        // Display ARG station information
+        function displayARGStationInfo() {
+            const stationName = document.getElementById('arg-station').value;
+            const station = argStations.find(s => s.name === stationName);
+            const detailsDiv = document.getElementById('arg-station-details');
+            const sensorTable = document.getElementById('arg-sensor-table');
+            const activityTable = document.getElementById('arg-activity-table');
+            const sensorTableBody = sensorTable.querySelector('tbody');
+            const activityTableBody = activityTable.querySelector('tbody');
 
-  clearARGStationInfo();
+            clearARGStationInfo();
 
-  if (station) {
-    detailsDiv.style.display = 'block';
-    sensorTable.style.display = 'table';
-    activityTable.style.display = 'table';
+            if (station) {
+                detailsDiv.classList.remove('hidden');
+                sensorTable.classList.remove('hidden');
+                activityTable.classList.remove('hidden');
 
-    if (station.sensors.length > 0) {
-      station.sensors.forEach(sensor => {
-        const row = document.createElement('tr');
-        const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
-        row.innerHTML = `
-          <td>${sensor.type || 'N/A'}</td>
-          <td>${sensor.installDate || 'N/A'}</td>
-          <td>${sensor.calibDate || 'N/A'}</td>
-          <td>${sensor.serialNumber || 'N/A'}</td>
-          <td class="${statusClass}">${sensor.status || 'N/A'}</td>
-          <td>${sensor.checkedOn || 'N/A'}</td>
-        `;
-        sensorTableBody.appendChild(row);
-      });
-    } else {
-      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
-    }
+                if (station.sensors.length > 0) {
+                    station.sensors.forEach(sensor => {
+                        const row = document.createElement('tr');
+                        const statusClass = sensor.status === 'SUSPECTED' ? 'suspected' : '';
+                        row.innerHTML = `
+                            <td>${sensor.type || 'N/A'}</td>
+                            <td>${sensor.installDate || 'N/A'}</td>
+                            <td>${sensor.calibDate || 'N/A'}</td>
+                            <td>${sensor.serialNumber || 'N/A'}</td>
+                            <td class="${statusClass}">${sensor.status || 'N/A'}</td>
+                            <td>${sensor.checkedOn || 'N/A'}</td>
+                        `;
+                        sensorTableBody.appendChild(row);
+                    });
+                } else {
+                    sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
+                }
 
-    if (station.activities.length > 0) {
-      station.activities.forEach(activity => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${activity.date || 'N/A'}</td>
-          <td>${activity.activity || 'N/A'}</td>
-        `;
-        activityTableBody.appendChild(row);
-      });
-    } else {
-      activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
-    }
-  }
-}
+                if (station.activities.length > 0) {
+                    station.activities.forEach(activity => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${activity.date || 'N/A'}</td>
+                            <td>${activity.activity || 'N/A'}</td>
+                        `;
+                        activityTableBody.appendChild(row);
+                    });
+                } else {
+                    activityTableBody.innerHTML = '<tr><td colspan="2" class="no-data">No activities available</td></tr>';
+                }
+            }
+        }
 
-// Clear AWS station information
-function clearAWSStationInfo() {
-  const detailsDiv = document.getElementById('aws-station-details');
-  const sensorTable = document.getElementById('aws-sensor-table');
-  const activityTable = document.getElementById('aws-activity-table');
-  detailsDiv.style.display = 'none';
-  sensorTable.style.display = 'none';
-  activityTable.style.display = 'none';
-  sensorTable.getElementsByTagName('tbody')[0].innerHTML = '';
-  activityTable.getElementsByTagName('tbody')[0].innerHTML = '';
-}
+        // Clear AWS station information
+        function clearAWSStationInfo() {
+            const detailsDiv = document.getElementById('aws-station-details');
+            const sensorTable = document.getElementById('aws-sensor-table');
+            const activityTable = document.getElementById('aws-activity-table');
+            detailsDiv.classList.add('hidden');
+            sensorTable.classList.add('hidden');
+            activityTable.classList.add('hidden');
+            sensorTable.querySelector('tbody').innerHTML = '';
+            activityTable.querySelector('tbody').innerHTML = '';
+        }
 
-// Clear ARG station information
-function clearARGStationInfo() {
-  const detailsDiv = document.getElementById('arg-station-details');
-  const sensorTable = document.getElementById('arg-sensor-table');
-  const activityTable = document.getElementById('arg-activity-table');
-  detailsDiv.style.display = 'none';
-  sensorTable.style.display = 'none';
-  activityTable.style.display = 'none';
-  sensorTable.getElementsByTagName('tbody')[0].innerHTML = '';
-  activityTable.getElementsByTagName('tbody')[0].innerHTML = '';
-}
+        // Clear ARG station information
+        function clearARGStationInfo() {
+            const detailsDiv = document.getElementById('arg-station-details');
+            const sensorTable = document.getElementById('arg-sensor-table');
+            const activityTable = document.getElementById('arg-activity-table');
+            detailsDiv.classList.add('hidden');
+            sensorTable.classList.add('hidden');
+            activityTable.classList.add('hidden');
+            sensorTable.querySelector('tbody').innerHTML = '';
+            activityTable.querySelector('tbody').innerHTML = '';
+        }
 
-// Initialize on page load
-window.onload = async function() {
-  await loadStationsFromExcel();
-};
+        // Initialize on page load
+        window.onload = async function() {
+            await loadStationsFromExcel();
+        };
+    </script>
+</body>
+</html>
