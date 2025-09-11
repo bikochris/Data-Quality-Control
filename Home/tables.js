@@ -286,7 +286,7 @@ function displayAWSStationInfo() {
         sensorTableBody.appendChild(row);
       });
     } else {
-      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
+      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">Not Yet Defined</td></tr>';
     }
 
     if (station.activities.length > 0) {
@@ -336,7 +336,7 @@ function displayARGStationInfo() {
         sensorTableBody.appendChild(row);
       });
     } else {
-      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No sensors available</td></tr>';
+      sensorTableBody.innerHTML = '<tr><td colspan="6" class="no-data">Not Yet Defined</td></tr>';
     }
 
     if (station.activities.length > 0) {
