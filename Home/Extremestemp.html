@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tmax/Tmin Instrument Testing Plot</title>
+    <!-- Plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- SheetJS CDN for Excel parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        #plot {
+            width: 100%;
+            height: 700px;
+            margin-top: 20px;
+        }
+        .instructions {
+            font-size: 14px;
+            color: #888;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+        .input-section {
+            margin-bottom: 20px;
+        }
+        input[type="file"], select {
+            margin: 5px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tmax/Tmin Instrument Testing Plot</h1>
+        <div class="description">
+            Upload an Excel file and select a sheet to plot Tmax or Tmin comparisons.
+            Use the mouse to zoom, drag to pan, or use the range slider and buttons.
+        </div>
+        <div class="input-section">
+            <input type="file" id="excelFile" accept=".xlsx" onchange="populateSheetOptions()">
+            <select id="sheetSelect" disabled>
+                <option value="">Select a sheet...</option>
+            </select>
+            <select id="comparisonSelect" disabled>
+                <option value="">Select comparison...</option>
+                <option value="Tmax_New vs Tmax_old">Tmax_New vs Tmax_old</option>
+                <option value="Tmin_New vs Tmin_old">Tmin_New vs Tmin_old</option>
+            </select>
+            <button id="loadAndPlot" disabled>Load and Plot</button>
+        </div>
+        <div id="plot"></div>
+        <div class="instructions">
+            Zoom: Click and drag or use the mouse wheel. | Range Slider: Adjust below the plot. | Buttons: Select "Last 100", "Last 500", or "All".
+            <br><span class="error-message" id="errorMessage"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded');
+
+            // Function to populate sheet options
+            window.populateSheetOptions = function() {
+                console.log('populating sheet options');
+                const fileInput = document.getElementById('excelFile');
+                const sheetSelect = document.getElementById('sheetSelect');
+                const loadButton = document.getElementById('loadAndPlot');
+                const comparisonSelect = document.getElementById('comparisonSelect');
+                const errorMessage = document.getElementById('errorMessage');
+
+                if (!fileInput.files.length) {
+                    sheetSelect.disabled = true;
+                    loadButton.disabled = true;
+                    comparisonSelect.disabled = true;
+                    sheetSelect.innerHTML = '<option value="">Select a sheet...</option>';
+                    errorMessage.textContent = '';
+                    console.log('No file selected');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    console.log('File loaded, parsing workbook');
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    sheetSelect.innerHTML = '<option value="">Select a sheet...</option>';
+                    workbook.SheetNames.forEach(sheet => {
+                        const option = document.createElement('option');
+                        option.value = sheet;
+                        option.textContent = sheet;
+                        sheetSelect.appendChild(option);
+                    });
+                    sheetSelect.disabled = false;
+                    comparisonSelect.disabled = false;
+                    loadButton.disabled = false;
+                    errorMessage.textContent = '';
+                    console.log('Sheets populated:', workbook.SheetNames);
+                };
+
+                reader.onerror = function() {
+                    errorMessage.textContent = 'Error reading the Excel file.';
+                    console.error('File read error');
+                    sheetSelect.disabled = true;
+                    loadButton.disabled = true;
+                    comparisonSelect.disabled = true;
+                    sheetSelect.innerHTML = '<option value="">Select a sheet...</option>';
+                };
+
+                reader.readAsArrayBuffer(file);
+            };
+
+            // Function to load Excel file and plot
+            const loadAndPlotButton = document.getElementById('loadAndPlot');
+            loadAndPlotButton.addEventListener('click', function() {
+                console.log('Load and Plot button clicked');
+                const fileInput = document.getElementById('excelFile');
+                const sheetSelect = document.getElementById('sheetSelect');
+                const comparisonSelect = document.getElementById('comparisonSelect');
+                const errorMessage = document.getElementById('errorMessage');
+
+                if (!fileInput.files.length) {
+                    errorMessage.textContent = 'Please upload an Excel file.';
+                    console.log('No file uploaded');
+                    return;
+                }
+                if (!sheetSelect.value) {
+                    errorMessage.textContent = 'Please select a sheet.';
+                    console.log('No sheet selected');
+                    return;
+                }
+                if (!comparisonSelect.value) {
+                    errorMessage.textContent = 'Please select a comparison.';
+                    console.log('No comparison selected');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const sheetName = sheetSelect.value;
+                const comparison = comparisonSelect.value.split(' vs ');
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    console.log('Processing file for sheet:', sheetName);
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: null, raw: true });
+
+                    // Skip header row (row 5) and take data from row 6 onwards
+                    const headerRow = jsonData[5]; // Row 5 is the header row (0-based index 5)
+                    const dataRows = jsonData.slice(6); // Row 6 onwards (0-based index 6)
+
+                    if (!headerRow || headerRow.length < 15) { // Ensure enough columns (P is index 15)
+                        errorMessage.textContent = 'Invalid data: Missing headers in row 5 or insufficient columns.';
+                        console.log('Invalid header row:', headerRow);
+                        return;
+                    }
+
+                    const colM = dataRows.map(row => (row[12] !== null ? Number(row[12]) : null)); // Tmax_New, raw
+                    const colN = dataRows.map(row => (row[13] !== null ? Number(row[13]) : null)); // Tmax_old, raw
+                    const colO = dataRows.map(row => (row[14] !== null ? Number(row[14]) : null)); // Tmin_New, raw
+                    const colP = dataRows.map(row => (row[15] !== null ? Number(row[15]) : null)); // Tmin_old, raw
+
+                    // Filter out null values and ensure matching lengths
+                    const validIndices = colM.map((_, i) => colM[i] !== null && colN[i] !== null && colO[i] !== null && colP[i] !== null &&
+                                                    !isNaN(colM[i]) && !isNaN(colN[i]) && !isNaN(colO[i]) && !isNaN(colP[i]));
+                    const filteredColM = colM.filter((_, i) => validIndices[i]);
+                    const filteredColN = colN.filter((_, i) => validIndices[i]);
+                    const filteredColO = colO.filter((_, i) => validIndices[i]);
+                    const filteredColP = colP.filter((_, i) => validIndices[i]);
+
+                    if (filteredColM.length === 0 || filteredColN.length === 0 || filteredColO.length === 0 || filteredColP.length === 0) {
+                        errorMessage.textContent = 'No valid data found in the selected sheet.';
+                        console.log('No valid data:', { filteredColM, filteredColN, filteredColO, filteredColP });
+                        return;
+                    }
+
+                    // Apply clamping after filtering for plotting (optional padding can be added)
+                    const clampedColM = filteredColM.map(v => v); // No clamping, using raw values
+                    const clampedColN = filteredColN.map(v => v); // No clamping, using raw values
+                    const clampedColO = filteredColO.map(v => v); // No clamping, using raw values
+                    const clampedColP = filteredColP.map(v => v); // No clamping, using raw values
+
+                    const plotData = { colM: clampedColM, colN: clampedColN, colO: clampedColO, colP: clampedColP };
+                    const rawData = { colM: filteredColM, colN: filteredColN, colO: filteredColO, colP: filteredColP };
+                    renderPlot(plotData, rawData, comparison[0], comparison[1], sheetName);
+                    errorMessage.textContent = ''; // Clear error message on success
+                    console.log('Plot rendered successfully');
+                };
+
+                reader.onerror = function() {
+                    errorMessage.textContent = 'Error reading the Excel file.';
+                    console.error('File read error');
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+
+            // Function to process data and render plot
+            function renderPlot(plotData, rawData, col1_label, col2_label, sheetName) {
+                console.log('Rendering plot with data:', plotData, 'raw data for R^2:', rawData, 'labels:', col1_label, col2_label, 'sheet:', sheetName);
+                const x = Array.from({ length: plotData.colM.length }, (_, i) => i + 1);
+
+                // Derive title based on selected comparison
+                const plotTitle = `${sheetName} - ${col1_label} vs ${col2_label}`;
+
+                // Map comparison to specific columns
+                let col1_data, col2_data, rawCol1, rawCol2;
+                switch (`${col1_label} vs ${col2_label}`) {
+                    case 'Tmax_New vs Tmax_old':
+                        col1_data = plotData.colM;
+                        col2_data = plotData.colN;
+                        rawCol1 = rawData.colM;
+                        rawCol2 = rawData.colN;
+                        break;
+                    case 'Tmin_New vs Tmin_old':
+                        col1_data = plotData.colO;
+                        col2_data = plotData.colP;
+                        rawCol1 = rawData.colO;
+                        rawCol2 = rawData.colP;
+                        break;
+                    default:
+                        errorMessage.textContent = 'Invalid comparison selected.';
+                        console.error('Unknown comparison:', `${col1_label} vs ${col2_label}`);
+                        return;
+                }
+
+                // Validate data existence
+                if (!col1_data || !col2_data || col1_data.length !== col2_data.length) {
+                    errorMessage.textContent = 'Data mismatch or invalid data for selected comparison.';
+                    console.error('Data validation failed:', { col1_data, col2_data });
+                    return;
+                }
+
+                // Compute dynamic y-axis range based on data
+                const allValues = [...col1_data, ...col2_data];
+                const minValue = Math.min(...allValues);
+                const maxValue = Math.max(...allValues);
+                const padding = (maxValue - minValue) * 0.1; // Add 10% padding on both sides
+                const yMin = minValue - padding;
+                const yMax = maxValue + padding;
+
+                // Compute R^2 to match Excel (based on Pearson correlation)
+                function calculateRSquared(arr1, arr2) {
+                    const validPairs = arr1.map((v, i) => [v, arr2[i]]).filter(pair => typeof pair[0] === 'number' && typeof pair[1] === 'number' && !isNaN(pair[0]) && !isNaN(pair[1]));
+                    if (validPairs.length < 2) {
+                        console.log('Insufficient valid pairs for R^2:', validPairs.length);
+                        return 0;
+                    }
+
+                    const n = validPairs.length;
+                    const arr1Valid = validPairs.map(pair => pair[0]);
+                    const arr2Valid = validPairs.map(pair => pair[1]);
+
+                    const mean1 = arr1Valid.reduce((a, b) => a + b, 0) / n;
+                    const mean2 = arr2Valid.reduce((a, b) => a + b, 0) / n;
+                    let cov = 0, var1 = 0, var2 = 0;
+
+                    for (let i = 0; i < n; i++) {
+                        const dev1 = arr1Valid[i] - mean1;
+                        const dev2 = arr2Valid[i] - mean2;
+                        cov += dev1 * dev2;
+                        var1 += dev1 * dev1;
+                        var2 += dev2 * dev2;
+                    }
+
+                    const stdDev1 = Math.sqrt(var1 / n); // Population standard deviation
+                    const stdDev2 = Math.sqrt(var2 / n); // Population standard deviation
+
+                    console.log('Debug - n:', n, 'Means:', { mean1, mean2 }, 'Covariance:', cov / n, 'StdDev1:', stdDev1, 'StdDev2:', stdDev2, 'Raw data sample:', arr1Valid.slice(0, 5), arr2Valid.slice(0, 5));
+
+                    if (stdDev1 === 0 || stdDev2 === 0) {
+                        console.log('Zero variance detected, R^2 set to 0');
+                        return 0;
+                    }
+
+                    const r = (cov / n) / (stdDev1 * stdDev2); // Pearson correlation
+                    const rSquared = r * r; // R^2
+                    return Number(rSquared.toFixed(4)); // Match Excel precision
+                }
+
+                // Calculate R^2 for the selected pair using raw data
+                const r_squared = calculateRSquared(rawCol1, rawCol2);
+                console.log('Calculated R^2:', r_squared);
+
+                // Compute differences for the selected pair (using clamped data for display)
+                const diffs = col1_data.map((v, i) => Math.abs(v - col2_data[i]));
+                const total_records = diffs.length;
+                const counts = [
+                    diffs.filter(d => d === 0).length,
+                    diffs.filter(d => d > 0 && d <= 5).length,
+                    diffs.filter(d => d > 5 && d <= 10).length,
+                    diffs.filter(d => d > 10 && d <= 15).length,
+                    diffs.filter(d => d > 15).length
+                ];
+                const percentages = counts.map(c => `${(c / total_records * 100).toFixed(1)}%`);
+                const labels = ["Diff = 0", "0 < Diff ≤ 5", "5 < Diff ≤ 10", "10 < Diff ≤ 15", "Diff > 15"];
+                const table_values = counts.map((c, i) => `${c} (${percentages[i]})`);
+                const colors = ['green', 'yellow', 'lightcoral', 'red', 'darkred'];
+
+                // Create summary text for the selected comparison
+                const summaryText = `R^2: ${r_squared}<br>` +
+                                   `Diff = 0: ${counts[0]} (${percentages[0]})<br>` +
+                                   `0 < Diff ≤ 5: ${counts[1]} (${percentages[1]})<br>` +
+                                   `5 < Diff ≤ 10: ${counts[2]} (${percentages[2]})<br>` +
+                                   `10 < Diff ≤ 15: ${counts[3]} (${percentages[3]})<br>` +
+                                   `Diff > 15: ${counts[4]} (${percentages[4]})`;
+
+                // Create Plotly figure with the selected comparison
+                const traces = [
+                    {
+                        x: x,
+                        y: col1_data,
+                        mode: 'lines',
+                        name: col1_label,
+                        line: { width: 2, color: 'blue', shape: 'spline' }
+                    },
+                    {
+                        x: x,
+                        y: col2_data,
+                        mode: 'lines',
+                        name: col2_label,
+                        line: { width: 2, color: 'orange', shape: 'spline' }
+                    },
+                    {
+                        type: 'table',
+                        header: {
+                            values: labels,
+                            fill: { color: colors },
+                            font: { color: 'white', size: 12 },
+                            align: 'center'
+                        },
+                        cells: {
+                            values: [table_values],
+                            fill: { color: 'lightgrey' },
+                            font: { color: 'black', size: 12 },
+                            align: 'center'
+                        },
+                        domain: { x: [0, 1], y: [0, 0.2] }
+                    }
+                ];
+
+                const layout = {
+                    title: { text: plotTitle, x: 0.5, xanchor: 'center' },
+                    xaxis: { title: 'Observation Number', rangeslider: { visible: true }, rangeselector: { buttons: [{ count: 100, label: 'Last 100', step: 'all', stepmode: 'backward' }, { count: 500, label: 'Last 500', step: 'all', stepmode: 'backward' }, { step: 'all', label: 'All' }] }, zoom: true },
+                    yaxis: { title: 'Temperature*10(°C)', domain: [0.25, 1], range: [yMin, yMax], zoom: true },
+                    hovermode: 'x unified',
+                    template: 'plotly_white',
+                    width: 1000,
+                    height: 700,
+                    dragmode: 'zoom',
+                    showlegend: true,
+                    annotations: [{ text: summaryText, xref: 'paper', yref: 'paper', x: 0.5, y: 1.05, showarrow: false, font: { size: 12, color: 'black', family: 'Arial', weight: 'bold' }, bgcolor: 'rgba(255, 255, 255, 0.8)', bordercolor: 'gray', borderwidth: 1, borderpad: 10, align: 'center' }]
+                };
+
+                try {
+                    Plotly.newPlot('plot', traces, layout);
+                } catch (error) {
+                    console.error('Error rendering plot:', error);
+                    document.getElementById('plot').innerHTML = '<p class="error-message">Error rendering plot. Please check the console for details.</p>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

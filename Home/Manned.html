@@ -4,203 +4,288 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Quality Control Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
     }
+
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
     .top-bar {
-      background: #4796d1;
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
       color: white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+    .top-bar strong {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
     .header {
       display: flex;
       justify-content: space-between;
-      padding: 20px;
       align-items: center;
+      padding: 20px 40px;
       background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
     .logo img {
-      height: 80px;
+      height: 60px;
+      transition: transform 0.3s ease;
     }
+
+    .logo img:hover {
+      transform: scale(1.05);
+    }
+
     .nav {
-      background: #008000;
-      color: white;
+      background: #15803d;
+      padding: 12px 0;
       display: flex;
       justify-content: center;
-      padding: 12px 0;
-      position: relative;
-      gap: 20px;
+      gap: 32px;
     }
+
     .nav a {
       color: white;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
+      font-weight: 500;
+      font-size: 1rem;
+      padding: 8px 16px;
+      transition: background-color 0.3s ease;
     }
+
     .nav a:hover {
-      text-decoration: underline;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
     }
+
     .dropdown {
       position: relative;
-      display: inline-block;
     }
+
     .dropdown-content {
       display: none;
       position: absolute;
-      background-color: #ffffff;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
+      background: white;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      z-index: 1000;
       top: 100%;
       left: 0;
-      border-left: 4px solid #008000;
     }
+
     .dropdown-content a {
-      color: #008000;
+      color: #15803d;
       padding: 12px 16px;
-      text-decoration: none;
       display: block;
-      font-weight: normal;
+      font-weight: 400;
+      transition: background-color 0.2s ease;
     }
+
     .dropdown-content a:hover {
-      background-color: #f4f4f4;
+      background-color: #f1f5f9;
     }
+
     .dropdown:hover .dropdown-content {
       display: block;
     }
+
     .content {
-      padding: 30px;
-      background: #f4f4f4;
-      min-height: 80vh;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
     .dashboard-box {
       background: white;
-      border-left: 6px solid #008000;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 32px;
     }
+
     h1 {
-      color: #008000;
+      color: #15803d;
+      font-size: 1.75rem;
+      margin-bottom: 24px;
     }
-    .station-categories {
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px 0;
-      position: relative;
-      min-height: 250px;
-    }
-    .station-categories h2 {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 24px;
-      margin: 0;
-      text-align: center;
-      width: 100%;
-      z-index: 2;
-    }
-    .station-row {
+
+    .Parameter ul {
+      list-style: none;
       display: flex;
-      justify-content: space-around;
-      margin-top: 40px;
-      position: relative;
-      z-index: 1;
-      flex-wrap: wrap;
-      gap: 20px;
+      gap: 16px;
+      margin-bottom: 32px;
     }
+
+    .Parameter ul li a {
+      color: #1f2937;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 4px;
+      background: #e5e7eb;
+      transition: background-color 0.3s ease;
+    }
+
+    .Parameter ul li a:hover {
+      background: #d1d5db;
+    }
+
+    .station-categories {
+      position: relative;
+      padding: 24px;
+      border-radius: 8px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .station-categories h2 {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .station-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+
     .station-box {
       text-align: center;
       cursor: pointer;
-      flex: 0 0 22%;
-      margin-bottom: 20px;
+      transition: transform 0.3s ease;
     }
+
+    .station-box:hover {
+      transform: translateY(-4px);
+    }
+
     .station-box .title {
-      font-size: 16px;
-      color: #fff;
-      margin-bottom: 5px;
-      font-weight: bold;
+      font-size: 1.1rem;
+      color: white;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
-    .station-box .number {
-      font-size: 24px;
-      font-weight: bold;
-      color: #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
-      margin: 0 auto 10px;
-      display: block;
-    }
+
     .station-box .photo {
-      width: 200px;
-      height: 200px;
-      background: #ffc107;
-      border-radius: 10px;
-      margin: 0 auto 10px;
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 8px;
       overflow: hidden;
+      background: #e5e7eb;
+      margin-bottom: 12px;
     }
+
     .station-box .photo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
+
     .station-box .label {
-      font-size: 14px;
-      color: #fff;
-      padding: 5px;
-      border-radius: 5px;
-      display: inline-block;
-    }
-    /* Province Colors */
-    .station-categories.kigali-city { background-color: #4682b4; }
-    .station-categories.kigali-city .number, .station-categories.kigali-city .label { background-color: #4682b4; }
-    .station-categories.eastern-province { background-color: #6a5acd; }
-    .station-categories.eastern-province .number, .station-categories.eastern-province .label { background-color: #6a5acd; }
-    .station-categories.northern-province { background-color: #20b2aa; }
-    .station-categories.northern-province .number, .station-categories.northern-province .label { background-color: #20b2aa; }
-    .station-categories.western-province { background-color: #ff6347; }
-    .station-categories.western-province .number, .station-categories.western-province .label { background-color: #ff6347; }
-    .station-categories.southern-province { background-color: #32cd32; }
-    .station-categories.southern-province .number, .station-categories.southern-province .label { background-color: #32cd32; }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #008000;
+      font-size: 0.9rem;
       color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      background: inherit;
     }
+
+    /* Province Colors */
+    .station-categories.kigali-city { background: #3b82f6; }
+    .station-categories.kigali-city .label { background: #1e3a8a; }
+    .station-categories.eastern-province { background: #6d28d9; }
+    .station-categories.eastern-province .label { background: #4c1d95; }
+    .station-categories.northern-province { background: #14b8a6; }
+    .station-categories.northern-province .label { background: #0f766e; }
+    .station-categories.western-province { background: #f43f5e; }
+    .station-categories.western-province .label { background: #be123c; }
+    .station-categories.southern-province { background: #22c55e; }
+    .station-categories.southern-province .label { background: #15803d; }
+
+    footer {
+      background: #15803d;
+      color: white;
+      text-align: center;
+      padding: 16px;
+      font-size: 0.9rem;
+    }
+
     .zoomed {
-      transform: scale(2);
-      transition: transform 0.5s ease;
-      z-index: 9999;
-      position: relative;
+      transform: scale(1.2);
+      transition: transform 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .nav {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .station-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="top-bar">
-    <div><strong>Personal Dashboard - Rwanda Meteorology Agency</strong></div>
+    <strong>Rwanda Meteorology Agency - Data Quality Control Dashboard</strong>
   </div>
 
   <div class="header">
     <div class="logo">
-      <img src="../Dashboard/Rwanda.png" alt="Rwanda Logo">
+      <img src="../Dashboard/Rwanda.png" alt="Rwanda Logo" onerror="this.src='https://via.placeholder.com/60'">
     </div>
     <div>
-      <img src="../Dashboard/meteo_logo.jpeg" alt="Rwanda Meteorology Agency Logo">
+      <img src="../Dashboard/meteo_logo.jpeg" alt="Rwanda Meteorology Agency Logo" onerror="this.src='https://via.placeholder.com/60'">
     </div>
   </div>
 
+  <div class="nav">
+    
+  </div>
 
   <div class="content">
+    <div class="dashboard-box">
+      <h1>Instrument Performance Monitoring</h1>
+      <div class="Parameter">
+        <ul>
+          <li><a href="tempCustom.html">Temperature</a></li>
+          <li><a href="HumidCustom.html">Humidity</a></li>
+          <li><a href="Extremestemp.html">Extremes Temperature</a></li>
+        </ul>
+      </div>
+    </div>
+
     <div class="dashboard-box">
       <h1>Operational Principal Stations</h1>
 
@@ -211,13 +296,13 @@
           <div class="station-box">
             <div class="title" onclick="openStations('Gitega')">GITEGA</div>
             <div class="photo">
-              <img src="KIGALI/kigali.jfif" alt="Kigali City Station" onclick="zoomAndGo(event,'KIGALI/KIGALI_CITY')">
+              <img src="KIGALI/kigali.jfif" alt="Kigali City Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'KIGALI/KIGALI_CITY')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('principal')">KANOMBE AERO</div>
             <div class="photo">
-              <img src="principal/pr.jpg" alt="Principal Station" onclick="zoomAndGo(event,'principal/Principal')">
+              <img src="principal/pr.jpg" alt="Principal Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'principal/Principal')">
             </div>
           </div>
         </div>
@@ -230,15 +315,14 @@
           <div class="station-box">
             <div class="title" onclick="openStations('volunteers')">BYIMANA</div>
             <div class="photo">
-              <img src="Volunteers/vol.jpg" alt="Byimana Station" onclick="zoomAndGo(event,'Volunteers/volunteers')">
+              <img src="Volunteers/vol.jpg" alt="Byimana Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'Volunteers/volunteers')">
             </div>
             <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('WEBMONITOR')">GIKONGORO</div>
-            
             <div class="photo">
-              <img src="aws.jfif" alt="AWS Monitor Station" onclick="zoomAndGo(event,'Webmonitor/WEBMONITOR')">
+              <img src="aws.jfif" alt="AWS Monitor Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'Webmonitor/WEBMONITOR')">
             </div>
           </div>
         </div>
@@ -251,19 +335,19 @@
           <div class="station-box">
             <div class="title" onclick="openStations('SOFF')">BYUMBA</div>
             <div class="photo">
-              <img src="SOFF/Soff.PNG" alt="SOFF Station" onclick="zoomAndGo(event,'SOFF/SOFF')">
+              <img src="SOFF/Soff.PNG" alt="SOFF Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'SOFF/SOFF')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('ARG')">BUSOGO</div>
             <div class="photo">
-              <img src="ARG/Arg.jpg" alt="Automatic Rain Gauge" onclick="zoomAndGo(event,'ARG/arg')">
+              <img src="ARG/Arg.jpg" alt="Automatic Rain Gauge" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'ARG/arg')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('LIGHTNING')">RUHENGERI</div>
             <div class="photo">
-              <img src="Lightning/lightning.jpg" alt="Lightning Station" onclick="zoomAndGo(event,'Lightning/LIGHTNING')">
+              <img src="Lightning/lightning.jpg" alt="Lightning Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'Lightning/LIGHTNING')">
             </div>
           </div>
         </div>
@@ -276,19 +360,19 @@
           <div class="station-box">
             <div class="title" onclick="openStations('LSI_METEO')">GISENYI AERO</div>
             <div class="photo">
-              <img src="aws.jfif" alt="AWS Station" onclick="zoomAndGo(event,'LSI_METEO/LSI_METEO')">
+              <img src="aws.jfif" alt="AWS Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'LSI_METEO/LSI_METEO')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('ELOG')">RUBENGERA</div>
             <div class="photo">
-              <img src="aws.jfif" alt="E-Logs Station" onclick="zoomAndGo(event,'Elog/ELOG')">
+              <img src="aws.jfif" alt="E-Logs Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'Elog/ELOG')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('FONERWA')">KAMEMBE</div>
             <div class="photo">
-              <img src="FONERWA/FONERWA.png" alt="FONERWA Station" onclick="zoomAndGo(event,'FONERWA/FONERWA')">
+              <img src="FONERWA/FONERWA.png" alt="FONERWA Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'FONERWA/FONERWA')">
             </div>
           </div>
         </div>
@@ -301,19 +385,19 @@
           <div class="station-box">
             <div class="title" onclick="openStations('NAEB')">KAWANGIRE</div>
             <div class="photo">
-              <img src="NAEB/Naeb.jfif" alt="NAEB Station" onclick="zoomAndGo(event,'NAEB/NAEB')">
+              <img src="NAEB/Naeb.jfif" alt="NAEB Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'NAEB/NAEB')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('MINAGRI')">KAZO</div>
             <div class="photo">
-              <img src="MINAGRI/minagri.jfif" alt="MINAGRI Station" onclick="zoomAndGo(event,'MINAGRI/MINAGRI')">
+              <img src="MINAGRI/minagri.jfif" alt="MINAGRI Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'MINAGRI/MINAGRI')">
             </div>
           </div>
           <div class="station-box">
             <div class="title" onclick="openStations('PLASER')">NYAGATARE</div>
             <div class="photo">
-              <img src="PLASER/precipitationMonitor.jpg" alt="PLASER Station" onclick="zoomAndGo(event,'PLASER/PLASER')">
+              <img src="PLASER/precipitationMonitor.jpg" alt="PLASER Station" onerror="this.src='https://via.placeholder.com/200'" onclick="zoomAndGo(event,'PLASER/PLASER')">
             </div>
           </div>
         </div>
@@ -322,16 +406,10 @@
   </div>
 
   <footer>
-    &copy; 2025 Rwanda Meteorology Agency &mdash; Personal Dashboard for Data Quality Control
+    &copy; 2025 Rwanda Meteorology Agency &mdash; Data Quality Control Dashboard
   </footer>
 
   <script>
-    function toggleDropdown(event, dropdownId) {
-      event.preventDefault();
-      const dropdown = document.getElementById(dropdownId);
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-
     function openStations(type) {
       localStorage.setItem("current_station_type", type);
       window.location.href = "principal.html";
@@ -344,7 +422,7 @@
       setTimeout(() => {
         img.classList.remove("zoomed");
         window.location.href = name + ".html";
-      }, 1000);
+      }, 300);
     }
 
     document.addEventListener('click', (event) => {
