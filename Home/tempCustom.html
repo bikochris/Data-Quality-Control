@@ -382,7 +382,7 @@
                 const summaryText = `R^2: ${r_squared}<br>` +
                                    `Diff = 0: ${counts[0]} (${percentages[0]})<br>` +
                                    `0 < Diff ≤ 5: ${counts[1]} (${percentages[1]})<br>` +
-                                   `5 < Diff ≤ 10: ${counts[2]} (${percentages[2]})<br>` +
+                                   `0 < Diff ≤ 10: ${counts[2]} (${percentages[2]})<br>` +
                                    `10 < Diff ≤ 15: ${counts[3]} (${percentages[3]})<br>` +
                                    `Diff > 15: ${counts[4]} (${percentages[4]})`;
 
@@ -423,7 +423,7 @@
                 const layout = {
                     title: { text: plotTitle, x: 0.5, xanchor: 'center' },
                     xaxis: { title: 'Observation Number', rangeslider: { visible: true }, rangeselector: { buttons: [{ count: 100, label: 'Last 100', step: 'all', stepmode: 'backward' }, { count: 500, label: 'Last 500', step: 'all', stepmode: 'backward' }, { step: 'all', label: 'All' }] }, zoom: true },
-                    yaxis: { title: 'Temperature*10 (°C)', domain: [0.25, 1], range: [yMin, yMax], zoom: true },
+                    yaxis: { title: 'Temperature*10(°C)', domain: [0.25, 1], range: [yMin, yMax], zoom: true },
                     hovermode: 'x unified',
                     template: 'plotly_white',
                     width: 1000,
