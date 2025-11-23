@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Data Quality Control Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
+      background: #f4f4f4;
     }
     .top-bar {
       background: #4796d1;
@@ -16,13 +17,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-weight: bold;
     }
     .header {
       display: flex;
       justify-content: space-between;
       padding: 20px;
-      align-items: center;
       background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .logo img {
       height: 80px;
@@ -33,14 +35,16 @@
       display: flex;
       justify-content: center;
       padding: 12px 0;
+      gap: 30px;
+      flex-wrap: wrap;
       position: relative;
-      gap: 20px;
     }
     .nav a {
       color: white;
       text-decoration: none;
       font-weight: bold;
       font-size: 16px;
+      padding: 8px 0;
     }
     .nav a:hover {
       text-decoration: underline;
@@ -53,12 +57,14 @@
       display: none;
       position: absolute;
       background-color: #ffffff;
-      min-width: 160px;
+      min-width: 200px;
       box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
+      z-index: 1000;
       top: 100%;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
       border-left: 4px solid #008000;
+      border-radius: 0 0 8px 8px;
     }
     .dropdown-content a {
       color: #008000;
@@ -68,191 +74,189 @@
       font-weight: normal;
     }
     .dropdown-content a:hover {
-      background-color: #f4f4f4;
+      background-color: #f0f8f0;
     }
     .dropdown:hover .dropdown-content {
       display: block;
     }
     .content {
       padding: 30px;
-      background: #f4f4f4;
       min-height: 80vh;
     }
     .dashboard-box {
       background: white;
       border-left: 6px solid #008000;
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 25px;
+      max-width: 1100px;
+      margin: 0 auto 40px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     h1 {
       color: #008000;
-    }
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-    }
-    .station-categories {
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px 0;
-      position: relative;
-      min-height: 250px;
-    }
-    .station-categories h2 {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 24px;
-      margin: 0;
       text-align: center;
-      width: 100%;
-      z-index: 2;
+      margin-bottom: 30px;
     }
-    .station-row {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 40px;
-      position: relative;
-      z-index: 1;
-    }
-    .station-box {
-      text-align: center;
-      vertical-align: top;
-      cursor: pointer;
-    }
-    .station-box .title {
-      font-size: 16px;
-      color: #fff;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .station-box .number {
-      font-size: 24px;
-      font-weight: bold;
-      color: #fff;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
-      margin: 0 auto 10px;
-      display: block;
-    }
-    .station-box .photo {
-      width: 200px;
-      height: 200px;
-      background: #ffc107;
-      border-radius: 10px;
-      margin: 0 auto 10px;
-      overflow: hidden;
-    }
-    .station-box .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .station-box .label {
-      font-size: 14px;
-      color: #fff;
-      background: #4682b4;
-      padding: 5px;
-      border-radius: 5px;
-      display: inline-block;
-    }
-    .station-categories.meteo-rwanda {
-      background-color: #4682b4;
-    }
-    .station-categories.meteo-rwanda .number {
-      background-color: #4682b4;
-    }
-    .station-categories.partners {
-      background-color: #6a5acd;
-    }
-    .station-categories.partners .number {
-      background-color: #6a5acd;
-    }
-    .station-categories.under-research {
-      background-color: #20b2aa;
-    }
-    .station-categories.under-research .number {
-      background-color: #20b2aa;
-    }
-    .summary {
-      margin-top: 20px;
-      padding: 15px;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .summary h3 {
+    h3 {
       color: #008000;
-      font-size: 20px;
-      margin-bottom: 10px;
+      text-align: center;
     }
     .summary table {
       width: 100%;
       border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 16px;
     }
     .summary th, .summary td {
-      padding: 10px;
-      text-align: left;
+      padding: 12px;
+      text-align: center;
       border-bottom: 1px solid #ddd;
     }
     .summary th {
       background-color: #008000;
       color: white;
+      cursor: pointer;
     }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #008000;
+    .summary th:hover {
+      background-color: #006400;
+    }
+    .summary tr:hover {
+      background-color: #f9f9f9;
+    }
+    .station-categories {
+      padding: 50px 20px 30px;
+      border-radius: 12px;
+      margin: 30px 0;
+      position: relative;
+      min-height: 280px;
       color: white;
     }
-    .zoomed {
+    .station-categories h2 {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 26px;
+      margin: 0;
+      z-index: 2;
+      background: rgba(0,0,0,0.4);
+      padding: 8px 20px;
+      border-radius: 8px;
+    }
+    .station-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-top: 20px;
+    }
+    .station-box {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      width: 220px;
+    }
+    .station-box:hover {
+      transform: translateY(-8px);
+    }
+    .station-box .title {
+      font-size: 17px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .station-box .number {
+      font-size: 28px;
+      font-weight: bold;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      border-radius: 50%;
+      margin: 10px auto;
+      background: rgba(255,255,255,0.3);
+    }
+    .station-box .photo {
+      width: 200px;
+      height: 200px;
+      background: #ffc107;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .station-box .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .station-box .photo img.zoomed {
       transform: scale(2);
-      transition: transform 0.5s ease;
-      z-index: 9999;
-      position: relative;
+    }
+    .station-box .label {
+      font-size: 13px;
+      background: rgba(0,0,0,0.5);
+      padding: 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+    .meteo-rwanda { background: linear-gradient(135deg, #4682b4, #5a9bd4); }
+    .partners { background: linear-gradient(135deg, #6a5acd, #7b68ee); }
+    .under-research { background: linear-gradient(135deg, #20b2aa, #48d1cc); }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #008000;
+      color: white;
+      font-size: 14px;
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
+
   <div class="top-bar">
     <div><strong>Personal Dashboard - Rwanda Meteorology Agency</strong></div>
   </div>
 
   <div class="header">
     <div class="logo">
-      <img src="Rwanda.png" alt="Rwanda Logo">
+      <img src="Rwanda.png" alt="Rwanda Coat of Arms">
     </div>
     <div>
-      <img src="meteo_logo.jpeg" alt="Rwanda Meteorology Agency Logo">
+      <img src="meteo_logo.jpeg" alt="Meteo Rwanda Logo">
     </div>
   </div>
 
   <div class="nav">
     <div class="dropdown">
-      <a href="#" onclick="toggleDropdown(event, 'stationsDropdown')">Stations Status ▾</a>
-      <div class="dropdown-content" id="stationsDropdown">
+      <a href="#" onclick="event.preventDefault();">Stations Status ▾</a>
+      <div class="dropdown-content">
         <a href="../Home/home3.html">ARG & AWS</a>
         <a href="../Home/Manned.html">Manned Stations</a>
       </div>
     </div>
+    
     <a href="../QC/qc_reports.html">QC Reports</a>
     <a href="../dataRequests/data_request_reports.html">Data Request Reports</a>
     <a href="../Reporting status/reporting_status_reports.html">Reporting Status Reports</a>
-    <a href="../Inspection/Inspection_Reports.html">Inspection Reports</a>
+        <div class="dropdown">
+      <a href="#" onclick="event.preventDefault();">Inspection ▾</a>
+      <div class="dropdown-content">
+        <a href="../Inspection/InspectionSummary.html">Summary Report</a>
+        <a href="../Inspection/Inspection_Reports.html">Mission reports</a>
+      </div>
+    </div>
     <a href="../Pre_Maintence/Pre_Maintenance_Reports.html">Pre-Maintenance Reports</a>
     <a href="../Maintenance/Maintenance_Reports.html">Maintenance Reports</a>
     <a href="../Post_Maintenance Report/Post_Maintenance_Reports.html">Post-Maintenance Reports</a>
     <a href="../SOFF/soff.html">SOFF</a>
     <div class="dropdown">
-      <a href="#" onclick="toggleDropdown(event, 'moreDropdown')">More ▾</a>
-      <div class="dropdown-content" id="moreDropdown">
-        <a href="../More/Mettings/metting.html">Meeting</a>
+      <a href="#" onclick="event.preventDefault();">More ▾</a>
+      <div class="dropdown-content">
+        <a href="../More/Mettings/metting.html">Meetings</a>
         <a href="../More/Activities/Activities.html">Other Activities</a>
         <a href="../More/Schedule/schedule.html">Schedule</a>
         <a href="../More/Training/Training.html">Training</a>
@@ -263,87 +267,162 @@
 
   <div class="content">
     <div class="dashboard-box">
-      <h1>Rwanda Operational Stations Network</h1>
+      <div class="summary">
+        <h3>RWANDA METEOROLOGY STATIONS SUMMARY</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>CATEGORY</th>
+              <th onclick="openStations('OPERATIONAL')">OPERATIONAL STATIONS</th>
+              <th onclick="openStations('NON_OPERATION')">NON-OPERATIONAL STATIONS</th>
+              <th onclick="openStations('TOTALY_CLOSED')">CLOSED STATIONS</th>
+              <th>TOTAL STATIONS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mannual Stations Ownned By METEO Rwanda</td>
+              <td>145</td>
+              <td>0</td>
+              <td>128</td>
+              <td>273</td>
+            </tr>
+            <tr>
+              <td>Automatic Stations Owned By METEO Rwanda</td>
+              <td>68</td>
+              <td>0</td>
+              <td>0</td>
+              <td>68</td>
+            </tr>
+            <tr>
+              <td>Automatic Rain Gauge Owned By METEO Rwanda</td>
+              <td>70</td>
+              <td>15</td>
+              <td>8 <small>(Converted to AWS)</small></td>
+              <td>93</td>
+            </tr>
+            <tr>
+              <td>Manual Stations Owned By Partners</td>
+              <td>0</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+            </tr>
+            <tr>
+              <td>Automatic Stations Owned By Partners</td>
+              <td>30</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+            </tr>
+            <tr>
+              <td>Stations Owned By Researchers</td>
+              <td>2</td>
+              <td>0</td>
+              <td>0</td>
+              <td>2</td>
+            </tr>
+            <tr style="font-weight: bold; background: #f0f8f0;">
+              <td>TOTAL STATIONS</td>
+              <td>313</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+              <td>To Be Determined</td>
+            </tr>
+            <tr onclick="openStations('SITES')" style="cursor: pointer; background: #e8f5e8;">
+              <td><strong>SITES</strong></td>
+              <td><strong>242</strong></td>
+              <td><strong>To Be Determined</strong></td>
+              <td><strong>To Be Determined</strong></td>
+              <td><strong>To Be Determined</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
+      <h1>RWANDA METEOROLOGY OPERATIONAL STATIONS</h1>
+
+      <!-- Meteo Rwanda Stations -->
       <div class="station-categories meteo-rwanda">
         <h2>Owned by Meteo Rwanda</h2>
         <div class="station-row">
-          <div class="station-box">
-            <div class="title" onclick="openStations('principal')">Principal Stations</div>
+          <div class="station-box" onclick="openStations('principal')">
+            <div class="title">Principal Stations</div>
             <div class="number">13</div>
             <div class="photo">
-              <img src="principal/pr.jpg" alt="Principal Station" onclick="zoomAndGo('principal/Principal')">
+              <img src="principal/pr.jpg" alt="Principal Station" onclick="zoomAndGo(event, 'principal/Principal')">
             </div>
             <div class="label">Climsoft</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('volunteers')">Volunteers Stations</div>
+          <div class="station-box" onclick="openStations('volunteers')">
+            <div class="title">Volunteers Stations</div>
             <div class="number">132</div>
             <div class="photo">
-              <img src="Volunteers/vol.jpg" alt="Volunteers Station" onclick="zoomAndGo('Volunteers/volunteers')">
+              <img src="Volunteers/vol.jpg" alt="Volunteers Station" onclick="zoomAndGo(event, 'Volunteers/volunteers')">
             </div>
             <div class="label">data.meteorwanda.gov.rw<br>Climsoft</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('WEBMONITOR')">AWS Monitor</div>
-            <div class="number">44</div>
+          <div class="station-box" onclick="openStations('WEBMONITOR')">
+            <div class="title">AWS Web Monitor</div>
+            <div class="number">48</div>
             <div class="photo">
-              <img src="aws.jfif" alt="AWS Monitor Station" onclick="zoomAndGo('Webmonitor/WEBMONITOR')">
+              <img src="aws.jfif" alt="AWS Web Monitor" onclick="zoomAndGo(event, 'Webmonitor/WEBMONITOR')">
             </div>
             <div class="label">AWS_WebMonitor_ATSserver<br>C:\NESA\files\Climat File</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('SOFF')">Upgraded By SOFF</div>
+          <div class="station-box" onclick="openStations('SOFF')">
+            <div class="title">Upgraded By SOFF</div>
             <div class="number">3</div>
             <div class="photo">
-              <img src="SOOF/Soff.PNG" alt="SOFF Station" onclick="zoomAndGo('SOOF/SOFF')">
+              <img src="SOOF/Soff.PNG" alt="SOFF Station" onclick="zoomAndGo(event, 'SOOF/SOFF')">
             </div>
             <div class="label">AWS_SOFF_ATSserver<br>C:\Campbellsci\LoggerNet</div>
           </div>
         </div>
         <div class="station-row">
-          <div class="station-box">
-            <div class="title" onclick="openStations('ARG')">Automatic Rain Gauge</div>
+          <div class="station-box" onclick="openStations('ARG')">
+            <div class="title">Automatic Rain Gauge</div>
             <div class="number">70</div>
             <div class="photo">
-              <img src="ARG/Arg.jpg" alt="Automatic Rain Gauge" onclick="zoomAndGo('ARG/arg')">
+              <img src="ARG/Arg.jpg" alt="ARG Station" onclick="zoomAndGo(event, 'ARG/arg')">
             </div>
             <div class="label">ARG_Elog_LSAServer<br>C:\DATA\XLOG</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('LIGHTNING')">AWS with Lightning Detector</div>
+          <div class="station-box" onclick="openStations('LIGHTNING')">
+            <div class="title">AWS with Lightning Detector</div>
             <div class="number">8</div>
             <div class="photo">
-              <img src="Lightining/lightening.jpg" alt="Lightning Station" onclick="zoomAndGo('Lightining/LIGHTINING')">
+              <img src="Lightining/lightening.jpg" alt="Lightning Station" onclick="zoomAndGo(event, 'Lightining/LIGHTINING')">
             </div>
             <div class="label">AWS_Lightning_ATSserver<br>C:\NESA\files</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('LSI_METEO')">AWS with X and Evolution Log</div>
+          <div class="station-box" onclick="openStations('LSI_METEO')">
+            <div class="title">AWS X & Evolution Log</div>
             <div class="number">6</div>
             <div class="photo">
-              <img src="aws.jfif" alt="AWS X and Evolution Station" onclick="zoomAndGo('LSI_METEO/LSI_METEO')">
+              <img src="aws.jfif" alt="LSI METEO Station" onclick="zoomAndGo(event, 'LSI_METEO/LSI_METEO')">
             </div>
             <div class="label">AWS_X&Evolution_LSAServer<br>C:\DATA\XLOG</div>
           </div>
-          <div class="station-box">
-            <div class="title" onclick="openStations('ELOG')">AWS with E-Logs</div>
+          <div class="station-box" onclick="openStations('ELOG')">
+            <div class="title">AWS with E-Logs</div>
             <div class="number">3</div>
             <div class="photo">
-              <img src="aws.jfif" alt="E-Logs Station" onclick="zoomAndGo('Elog/ELOG')">
+              <img src="aws.jfif" alt="E-Logs Station" onclick="zoomAndGo(event, 'Elog/ELOG')">
             </div>
             <div class="label">AWS_Elog_LSAServer<br>C:\DATA\XLOG</div>
           </div>
         </div>
       </div>
 
+      <!-- Partners -->
       <div class="station-categories partners">
         <h2>Owned by Partners</h2>
         <div class="station-row">
           <div class="station-box" onclick="openStations('KIGALI_CITY')">
             <div class="title">Kigali City</div>
             <div class="number">6</div>
-            <div class="photo"><img src="KIGALI/kigali.jfif" alt="Kigali City Station"></div>
+            <div class="photo"><img src="KIGALI/kigali.jfif" alt="Kigali City AWS"></div>
             <div class="label">AWS_WebMonitor_ATSserver<br>C:\NESA\files\Climat File</div>
           </div>
           <div class="station-box" onclick="openStations('FONERWA')">
@@ -367,113 +446,45 @@
         </div>
       </div>
 
+      <!-- Under Research -->
       <div class="station-categories under-research">
         <h2>Under Research</h2>
         <div class="station-row">
           <div class="station-box" onclick="openStations('PLASER')">
             <div class="title">PLASER</div>
             <div class="number">2</div>
-            <div class="photo"><img src="PLASER/precipitationMonitor.jpg" alt="PLASER Station"></div>
-            <div class="label">ATSserver;C:\disdrometerdata<br>METEORWANDA</div>
+            <div class="photo"><img src="PLASER/precipitationMonitor.jpg" alt="PLASER Disdrometer"></div>
+            <div class="label">ATSserver: C:\disdrometerdata<br>METEORWANDA</div>
           </div>
         </div>
-      </div>
-
-      <div class="summary">
-        <h3>Summary of Stations</h3>
-        <table>
-          <tr>
-            <th>Category</th>
-            <th>Operational</th>
-            <th onclick="openStations('NON_OPERATION')">Non-Operational</th>
-            <th onclick="openStations('TOTALY_CLOSED')">Totally Closed</th>
-            <th>Total</th>
-          </tr>
-          <tr>
-            <td>Manned METEO</td>
-            <td>145</td>
-            <td>0</td>
-            <td>128</td>
-            <td>273</td>
-          </tr>
-          <tr>
-            <td>AWS METEO</td>
-            <td>74</td>
-            <td>0</td>
-            <td>0</td>
-            <td>74</td>
-          </tr>
-          <tr>
-            <td>ARG</td>
-            <td>70</td>
-            <td>15</td>
-            <td>8 to full AWS</td>
-            <td>94</td>
-          </tr>
-          <tr>
-            <td>Manned Partners</td>
-            <td>0</td>
-            <td>TBD</td>
-            <td>TBD</td>
-            <td>TBD</td>
-          </tr>
-          <tr>
-            <td>AWS Partners and Research</td>
-            <td>32</td>
-            <td>TBD</td>
-            <td>TBD</td>
-            <td>TBD</td>
-          </tr>
-          <tr>
-            <td><strong>Total Stations</strong></td>
-            <td><strong>311</strong></td>
-            <td><strong>15</strong></td>
-            <td><strong>136</strong></td>
-            <td><strong>462</strong></td>
-          </tr>
-          <tr>
-            <td><strong>Sites</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-            <td><strong>TBD</strong></td>
-          </tr>
-        </table>
       </div>
     </div>
   </div>
 
   <footer>
-    &copy; 2025 Rwanda Meteorology Agency &mdash; Personal Dashboard for Data Quality Control
+    &copy; 2025 Rwanda Meteorology Agency — Personal Dashboard for Data Quality Control
   </footer>
 
   <script>
-    function toggleDropdown(event, dropdownId) {
-      event.preventDefault();
-      const dropdown = document.getElementById(dropdownId);
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-
     function openStations(type) {
       localStorage.setItem("current_station_type", type);
       window.location.href = "stations.html";
     }
 
-    function zoomAndGo(name) {
+    function zoomAndGo(event, path) {
       event.stopPropagation();
       const img = event.target;
       img.classList.add("zoomed");
       setTimeout(() => {
         img.classList.remove("zoomed");
-        window.location.href = name + ".html";
-      }, 1000);
+        window.location.href = path + ".html";
+      }, 800);
     }
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (event) => {
-      const dropdowns = document.querySelectorAll('.dropdown-content');
-      dropdowns.forEach(dropdown => {
-        if (!event.target.closest('.dropdown')) {
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+        if (!e.target.closest('.dropdown')) {
           dropdown.style.display = 'none';
         }
       });

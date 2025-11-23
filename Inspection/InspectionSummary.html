@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rwanda Inspection Data</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f8f9fa; }
+    .container { max-width: 1900px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #2c3e50; font-size: 28px; }
+    #status { text-align: center; margin: 10px 0; font-weight: bold; }
+    .success { color: #27ae60; }
+    .error { color: #e74c3c; }
+    #controls { text-align: center; margin: 20px 0; }
+    select { padding: 10px 16px; font-size: 17px; width: 300px; border-radius: 8px; border: 2px solid #3498db; }
+
+    #table-container {
+      max-height: calc(100vh - 180px);
+      overflow: auto;
+      border: 2px solid #34495e;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    table { border-collapse: separate; border-spacing: 0; font-size: 14px; width: 100%; }
+    th, td {
+      border: 1.5px solid #34495e;
+      padding: 11px 14px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 100px;
+      box-sizing: border-box;
+    }
+
+    /* Frozen header */
+    thead th {
+      position: sticky; top: 0; background: #2c3e50 !important; color: white;
+      font-weight: bold; z-index: 30;
+    }
+
+    /* Frozen Column A (District) */
+    th:nth-child(1), td:nth-child(1) {
+      position: sticky; left: 0; background: #e3f2fd !important;
+      z-index: 25; font-weight: bold; min-width: 180px;
+    }
+
+    /* Frozen Column D (Station Name) */
+    th:nth-child(4), td:nth-child(4) {
+      position: sticky; left: 180px; background: #fff3e0 !important;
+      z-index: 25; min-width: 240px;
+    }
+
+    thead th:nth-child(1), thead th:nth-child(4) {
+      background: #2c3e50 !important; color: white; z-index: 40;
+    }
+
+    td:nth-child(4) { border-right: 5px double #2c3e50; }
+    tbody tr:hover td { background: #bbdefb !important; }
+    tbody tr:hover td:nth-child(1) { background: #90caf9 !important; }
+    tbody tr:hover td:nth-child(4) { background: #ffcc80 !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Rwanda Inspection Data</h1>
+  <div id="status">Loading "Inspection Report.xlsx"...</div>
+  <div id="controls" style="display:none;">
+    <select id="provinceSelect">
+      <option value="">-- Select Province --</option>
+    </select>
+  </div>
+  <div id="table-container"></div>
+</div>
+
+<script>
+  const excelFilePath = "Inspection Report.xlsx";
+  const provinces = ['KIGALI', 'NORTH', 'SOUTH', 'WEST', 'EAST'];
+  let workbook = null;
+
+  fetch(excelFilePath)
+    .then(r => { if (!r.ok) throw new Error("File not found"); return r.arrayBuffer(); })
+    .then(data => {
+      workbook = XLSX.read(data, {type:"array"});
+      const sel = document.getElementById('provinceSelect');
+      provinces.forEach(p => {
+        if (workbook.SheetNames.includes(p)) sel.add(new Option(p, p));
+      });
+      document.getElementById('status').innerHTML = '<span class="success">File loaded! Choose a province.</span>';
+      document.getElementById('controls').style.display = 'block';
+    })
+    .catch(err => {
+      document.getElementById('status').innerHTML = `<span class="error">Error: ${err.message}</span>`;
+    });
+
+  function renderSheet(sheetName) {
+    const ws = workbook.Sheets[sheetName];
+    if (!ws || !ws['!ref']) return;
+
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    const merges = ws['!merges'] || [];
+
+    const isMergeStart = (r, c) => merges.some(m => m.s.r === r && m.s.c === c);
+    const isCoveredByMerge = (r, c) => merges.some(m => r >= m.s.r && r <= m.e.r && c >= m.s.c && c <= m.e.c);
+    const getMerge = (r, c) => merges.find(m => m.s.r === r && m.s.c === c);
+
+    let html = '<table><thead><tr>';
+
+    // Header row
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      if (isCoveredByMerge(0, c) && !isMergeStart(0, c)) continue;
+      const cell = ws[XLSX.utils.encode_cell({r:0, c})];
+      const val = cell ? XLSX.utils.format_cell(cell) : '&nbsp;';
+      const m = getMerge(0, c);
+      if (m) {
+        html += `<th rowspan="${m.e.r-m.s.r+1}" colspan="${m.e.c-m.s.c+1}">${val}</th>`;
+        c += m.e.c - m.s.c;
+      } else {
+        html += `<th>${val}</th>`;
+      }
+    }
+    html += '</tr></thead><tbody>';
+
+    // Data rows - MAIN FIX HERE
+    for (let r = 1; r <= range.e.r; r++) {
+      html += '<tr>';
+      for (let c = range.s.c; c <= range.e.c; c++) {
+
+        // If this cell is covered by a merge but is NOT the top-left → skip completely
+        if (isCoveredByMerge(r, c) && !isMergeStart(r, c)) {
+          continue;
+        }
+
+        const addr = XLSX.utils.encode_cell({r, c});
+        const cell = ws[addr];
+
+        // ONLY show value if this cell is the merge start OR not part of any merge
+        const showValue = isMergeStart(r, c) || !isCoveredByMerge(r, c);
+        const val = showValue && cell ? XLSX.utils.format_cell(cell) : '&nbsp;';
+
+        const m = getMerge(r, c);
+        if (m) {
+          const rowspan = m.e.r - m.s.r + 1;
+          const colspan = m.e.c - m.s.c + 1;
+          html += `<td rowspan="${rowspan}" colspan="${colspan}">${val}</td>`;
+          c += colspan - 1;
+        } else {
+          html += `<td>${val}</td>`;
+        }
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    document.getElementById('table-container').innerHTML = html;
+  }
+
+  document.getElementById('provinceSelect').onchange = function() {
+    if (this.value) renderSheet(this.value);
+  };
+</script>
+</body>
+</html>

@@ -3,90 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <title>Stations List</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background:#f4f4f4; }
-    h1 { color:#008000; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; background:white; }
-    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-    th { background: #008000; color: white; }
+    body {font-family: Arial, sans-serif; padding:20px; background:#f4f4f4; margin:0;}
+    h1 {color:#008000; text-align:center;}
+    #tableContainer {min-height:200px; position:relative;}
+    .loader {text-align:center; padding:40px; font-size:18px; color:#008000;}
+    .error {color:red; text-align:center; padding:40px; font-size:18px;}
+    table {width:100%; border-collapse:collapse; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    th, td {padding:12px; border:1px solid #ccc; text-align:center;}
+    th {background:#008000; color:white; font-weight:bold;}
+    tr:nth-child(even) {background:#f9f9f9;}
   </style>
 </head>
 <body>
   <h1 id="title">Stations Data</h1>
-  <div id="tableContainer"></div>
+  <div id="tableContainer">
+    <div class="loader">Loading data, please wait...</div>
+  </div>
 
   <script>
-    // Single Excel file with multiple sheets
-    const excelFile = "OperationalARG&AWS.xlsx"; // replace with your actual file path
+    // YOUR EXCEL FILE – make sure the path is correct!
+    const excelFile = "OperationalARG&AWS.xlsx";   // ← same folder as this HTML file
+
     const sheetMap = {
-      principal: "Principal",      // sheet name for principal stations
-      volunteers: "Volunteers",    // sheet name for volunteers stations
-      SOFF: "SOFF",                // sheet name for SOFF stations
-      NAEB: "NAEB",                 // sheet name for NAEB stations
-      MINAGRI: "MINAGRI",      // sheet name for principal stations
-      FONERWA: "FONERWA",    // sheet name for volunteers stations
-      KIGALI_CITY: "KIGALI_CITY",                 // sheet name for NAEB stations
-      WEBMONITOR: "WEBMONITOR",                // sheet name for SOFF stations
-      ARG: "ARG",                 // sheet name for NAEB stations
-      LSI_METEO: "LSI_METEO",      // sheet name for principal stations
-      LIGHTINING: "LIGHTINING",    // sheet name for volunteers stations
-      ELOG: "ELOG",          
-      PLASER:"PLASER",
-      NON_OPERATION:"NON_OPERATION", 
-      TOTALY_CLOSED:"TOTALY_CLOSED", // sheet name for NAEB stations
+      principal: "Principal",
+      volunteers: "Volunteers",
+      SOFF: "SOFF",
+      NAEB: "NAEB",
+      MINAGRI: "MINAGRI",
+      FONERWA: "FONERWA",
+      KIGALI_CITY: "KIGALI_CITY",
+      WEBMONITOR: "WEBMONITOR",
+      ARG: "ARG",
+      LSI_METEO: "LSI_METEO",
+      LIGHTINING: "LIGHTINING",
+      ELOG: "ELOG",
+      PLASER: "PLASER",
+      NON_OPERATION: "NON_OPERATION",
+      TOTALY_CLOSED: "TOTALY_CLOSED",
+      OPERATIONAL: "OPERATIONAL",
+      SITES: "SITES"
     };
 
-    const current = localStorage.getItem("current_station_type"); // set on dashboard click
+    const current = localStorage.getItem("current_station_type");
     const container = document.getElementById("tableContainer");
-    const title = document.getElementById("title");
+    const titleEl = document.getElementById("title");
 
-    async function loadSheet(sheetName) {
+    // ---------- MERGED CELLS SUPPORT ----------
+    async function loadWorkbook() {
       try {
         const response = await fetch(excelFile);
+        if (!response.ok) throw new Error(`File not found (HTTP ${response.status})`);
         const arrayBuffer = await response.arrayBuffer();
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-
-        if (!workbook.SheetNames.includes(sheetName)) {
-          console.error("Sheet not found:", sheetName);
-          return [];
-        }
-
-        const sheet = workbook.Sheets[sheetName];
-        return XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      } catch (e) {
-        console.error("Error loading file", excelFile, e);
-        return [];
+        return XLSX.read(arrayBuffer, {type: "array"});
+      } catch (err) {
+        throw new Error(`Cannot load Excel file: ${err.message}<br>Check file path and server permissions.`);
       }
     }
 
+    function buildTableWithMerges(sheet) {
+      const range = XLSX.utils.decode_range(sheet['!ref']);
+      const merges = sheet['!merges'] || [];
+      const data = XLSX.utils.sheet_to_json(sheet, {header:1, defval:""});
+
+      // Build merge lookup
+      const mergeMap = {};
+      merges.forEach(m => {
+        mergeMap[`${m.s.r},${m.s.c}`] = {
+          rowspan: m.e.r - m.s.r + 1,
+          colspan: m.e.c - m.s.c + 1
+        };
+      });
+
+      let html = "<table>";
+      data.forEach((row, r) => {
+        html += "<tr>";
+        row.forEach((cell, c) => {
+          const key = `${r},${c}`;
+          const merge = mergeMap[key];
+
+          // Skip cells that belong to a previous merge
+          if (cell === null) return;
+
+          if (merge && (merge.rowspan > 1 || merge.colspan > 1)) {
+            // Mark all covered cells as consumed
+            for (let rr = r; rr < r + merge.rowspan; rr++) {
+              for (let cc = c; cc < c + merge.colspan; cc++) {
+                if (data[rr]) data[rr][cc] = null;
+              }
+            }
+            html += `<td rowspan="${merge.rowspan}" colspan="${merge.colspan}">${cell || ""}</td>`;
+          } else {
+            html += `<td>${cell || ""}</td>`;
+          }
+        });
+        html += "</tr>";
+      });
+      html += "</table>";
+      return html;
+    }
+
+    // ---------- MAIN ----------
     async function init() {
       if (!current || !sheetMap[current]) {
-        container.innerHTML = "<p style='color:red'>No station type selected.</p>";
+        titleEl.textContent = "No Station Selected";
+        container.innerHTML = `<div class="error">Please go back to the dashboard and click a station type.</div>`;
         return;
       }
 
       const sheetName = sheetMap[current];
-      title.textContent = current.charAt(0).toUpperCase() + current.slice(1) + " Stations";
+      titleEl.textContent = current.replace(/_/g, " ").toUpperCase() + " STATIONS";
 
-      const data = await loadSheet(sheetName);
+      try {
+        const workbook = await loadWorkbook();
 
-      if (data.length === 0) {
-        container.innerHTML = "<p style='color:red'>No data available.</p>";
-        return;
+        if (!workbook.SheetNames.includes(sheetName)) {
+          throw new Error(`Sheet "${sheetName}" not found.<br>Available sheets: ${workbook.SheetNames.join(", ")}`);
+        }
+
+        const sheet = workbook.Sheets[sheetName];
+        const tableHTML = buildTableWithMerges(sheet);
+        container.innerHTML = tableHTML;
+
+      } catch (err) {
+        container.innerHTML = `<div class="error"><strong>Error:</strong><br>${err.message}</div>`;
+        console.error(err);
       }
-
-      // Build table
-      let html = "<table>";
-      html += "<tr>" + data[0].map(h => `<th>${h}</th>`).join("") + "</tr>";
-      for (let i = 1; i < data.length; i++) {
-        html += "<tr>" + data[i].map(cell => `<td>${cell ?? ""}</td>`).join("") + "</tr>";
-      }
-      html += "</table>";
-
-      container.innerHTML = html;
     }
 
+    // Start loading immediately
     init();
   </script>
 </body>
