@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Idea Pool – Share Your Thoughts</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    header {
+      background: #4a00e0;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    h1 { margin: 0; font-size: 2.5em; }
+    .input-area {
+      padding: 30px;
+      background: #f8f9fa;
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 70%;
+      padding: 14px 20px;
+      font-size: 1.1em;
+      border: 2px solid #ddd;
+      border-radius: 50px;
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: #4a00e0; }
+    button {
+      padding: 14px 30px;
+      font-size: 1.1em;
+      background: #8e2de2;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    button:hover { background: #791fa1; }
+    .ideas {
+      padding: 30px;
+    }
+    .idea {
+      background: #f0eafc;
+      padding: 15px 20px;
+      margin: 12px 0;
+      border-radius: 12px;
+      font-size: 1.2em;
+      word-break: break-word;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+    .count {
+      text-align: center;
+      font-size: 1.3em;
+      color: #555;
+      margin: 20px 0;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Idea Pool</h1>
+    <p>What word or short idea is on your mind right now?</p>
+  </header>
+
+  <div class="input-area">
+    <input type="text" id="ideaInput" placeholder="Type your idea here..." maxlength="120" autocomplete="off" />
+    <button onclick="submitIdea()">Submit</button>
+  </div>
+
+  <div class="count">Total ideas: <span id="counter">0</span></div>
+
+  <div class="ideas" id="ideasList">
+    <!-- ideas appear here in real-time -->
+  </div>
+
+  <footer>Made with love – No login required – Everything is public & real-time</footer>
+</div>
+
+<!-- Firebase SDKs (compat version for simple scripts) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+// YOUR REAL CONFIGURATION (already inserted)
+const firebaseConfig = {
+  apiKey: "AIzaSyDiQTxHIVVvHoyHw8z0eloUdt-kAln2Liw",
+  authDomain: "mmmm-4bb81.firebaseapp.com",
+  databaseURL: "https://mmmm-4bb81-default-rtdb.firebaseio.com",
+  projectId: "mmmm-4bb81",
+  storageBucket: "mmmm-4bb81.firebasestorage.app",
+  messagingSenderId: "636304485950",
+  appId: "1:636304485950:web:292a9fdb682d609acfeb6f",
+  measurementId: "G-9RPTN2N0TP"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const ideasRef = db.ref('ideas');
+
+// Submit idea
+function submitIdea() {
+  const input = document.getElementById('ideaInput');
+  const text = input.value.trim();
+  if (text === '') return;
+
+  ideasRef.push({
+    text: text,
+    timestamp: Date.now()
+  });
+
+  input.value = '';
+}
+
+// Listen for new ideas (real-time)
+ideasRef.on('value', (snapshot) => {
+  const ideas = snapshot.val();
+  const list = document.getElementById('ideasList');
+  const counter = document.getElementById('counter');
+  
+  if (!ideas) {
+    list.innerHTML = '<p style="text-align:center;color:#999;">No ideas yet – be the first!</p>';
+    counter.textContent = '0';
+    return;
+  }
+
+  const ideaArray = Object.entries(ideas).map(([id, value]) => ({ id, ...value }));
+  ideaArray.sort((a, b) => b.timestamp - a.timestamp);
+
+  list.innerHTML = '';
+  ideaArray.forEach(idea => {
+    const div = document.createElement('div');
+    div.className = 'idea';
+    div.textContent = idea.text;
+    list.appendChild(div);
+  });
+
+  counter.textContent = ideaArray.length;
+});
+
+// Press Enter to submit
+document.getElementById('ideaInput').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') submitIdea();
+});
+</script>
+</body>
+</html>
