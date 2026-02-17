@@ -374,19 +374,19 @@ rows.sort((a, b) => {
             <td>${h}</td>
             <td>${d}</td>
             <td class="${st.qcd==='S'?'submitted':'not-submitted'}">
-                ${st.qcd==='S' ? `<a href="/QC/QC_Report/reports/${month}/${st.name}_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
+                ${st.qcd==='S' ? `<a href="QC_Report/reports/${month}/${st.name}_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
             </td>
             <td class="${st.md==='S'?'submitted':'not-submitted'}">
-                ${st.md==='S' ? `<a href="/QC/QC_Report/reports/${month}/${st.name}_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
+                ${st.md==='S' ? `<a href="QC_Report/reports/${month}/${st.name}_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
             </td>
             <td class="${st.qch==='S'?'submitted':'not-submitted'}">
-                ${st.qch==='S' ? `<a href="/QC/QC_Report/reports/${month}/${st.name}_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+                ${st.qch==='S' ? `<a href="QC_Report/reports/${month}/${st.name}_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
             </td>
             <td class="${st.mh==='S'?'submitted':'not-submitted'}">
-                ${st.mh==='S' ? `<a href="/QC/QC_Report/reports/${month}/${st.name}_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+                ${st.mh==='S' ? `<a href="QC_Report/reports/${month}/${st.name}_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
             </td>
             <td class="${st.cs==='S'?'submitted':'not-submitted'}">
-                ${st.cs==='S' ? `<a href="/QC/QC_Report/reports/${month}/${st.name}_Climate_Summary.pdf" download>Submitted</a>` : "Not submitted"}
+                ${st.cs==='S' ? `<a href="QC_Report/reports/${month}/${st.name}_Climate_Summary.pdf" download>Submitted</a>` : "Not submitted"}
             </td>
             <td class="${completed ? 'completed' : 'not-completed'}">
                 ${completed ? "Completed" : "Not Completed"}
@@ -404,19 +404,19 @@ rows.sort((a, b) => {
         <td>${avgH}%</td>
         <td>${avgD}%</td>
         <td class="${hq.qcd==='S'?'submitted':'not-submitted'}">
-            ${hq.qcd==='S' ? `<a href="/QC/QC_Report/reports/${month}/HQ_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
+            ${hq.qcd==='S' ? `<a href="QC_Report/reports/${month}/HQ_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
         </td>
         <td class="${hq.md==='S'?'submitted':'not-submitted'}">
-            ${hq.md==='S' ? `<a href="/QC/QC_Report/reports/${month}/HQ_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
+            ${hq.md==='S' ? `<a href="QC_Report/reports/${month}/HQ_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
         </td>
         <td class="${hq.qch==='S'?'submitted':'not-submitted'}">
-            ${hq.qch==='S' ? `<a href="/QC/QC_Report/reports/${month}/HQ_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+            ${hq.qch==='S' ? `<a href="QC_Report/reports/${month}/HQ_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
         </td>
         <td class="${hq.mh==='S'?'submitted':'not-submitted'}">
-            ${hq.mh==='S' ? `<a href="/QC/QC_Report/reports/${month}/HQ_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+            ${hq.mh==='S' ? `<a href="QC_Report/reports/${month}/HQ_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
         </td>
         <td class="${hq.cs==='S'?'submitted':'not-submitted'}">
-            ${hq.cs==='S' ? `<a href="/QC/QC_Report/reports/${month}/HQ_Climate_Summary.docx" download>Submitted</a>` : "Not submitted"}
+            ${hq.cs==='S' ? `<a href="QC_Report/reports/${month}/HQ_Climate_Summary.docx" download>Submitted</a>` : "Not submitted"}
         </td>
         <td class="${hqCompleted ? 'completed' : 'not-completed'}">
             ${hqCompleted ? "Completed" : "Not Completed"}
