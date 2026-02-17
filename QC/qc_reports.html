@@ -1,171 +1,490 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>QC Reports - Data Quality Control</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f4f4;
-    }
-    .top-bar {
-      background: #4796d1;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px;
-      align-items: center;
-      background: white;
-    }
-    .logo img {
-      height: 80px;
-    }
-    .nav {
-      background: #008000;
-      color: white;
-      display: flex;
-      justify-content: center;
-      padding: 12px 0;
-    }
-    .nav a {
-      color: white;
-      margin: 0 20px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .nav a:hover {
-      text-decoration: underline;
-    }
-    .content {
-      padding: 40px;
-      max-width: 1000px;
-      margin: auto;
-      background: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      border-left: 6px solid #008000;
-    }
-    h1 {
-      color: #008000;
-      margin-bottom: 20px;
-    }
-    .qc-icon {
-      float: right;
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-    }
-    .report-section {
-      margin-top: 30px;
-    }
-    .report-box {
-      background: #f0f8f5;
-      padding: 20px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      border-left: 5px solid #008000;
-    }
-    .report-box h3 {
-      margin-top: 0;
-    }
-    .report-box a {
-      display: inline-block;
-      margin-top: 10px;
-      color: #006400;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .report-box a:hover {
-      text-decoration: underline;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #008000;
-      color: white;
-      margin-top: 50px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station Reporting Overview</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 30px;
+            background: #f5f6f5;
+            color: #333;
+        }
+        h1 {
+            color: #1a3c5e;
+            text-align: center;
+        }
+        .controls {
+            text-align: center;
+            margin: 25px 0 35px;
+        }
+        select {
+            padding: 10px 16px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+            min-width: 220px;
+            background: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            margin-bottom: 40px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 12px 10px;
+            text-align: center;
+            font-size: 0.98rem;
+        }
+        th {
+            background: #2c5282;
+            color: white;
+            font-weight: 600;
+        }
+        .station-name {
+            text-align: left;
+            font-weight: 500;
+            padding-left: 15px;
+        }
+        .submitted a {
+            color: #2f855a;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .submitted a:hover {
+            text-decoration: underline;
+        }
+        .not-submitted {
+            color: #c53030;
+            font-weight: bold;
+        }
+        .completed {
+            color: #2f855a;
+            font-weight: bold;
+        }
+        .not-completed {
+            color: #c53030;
+            font-weight: bold;
+        }
+        .green-row    { background-color: #e6fffa !important; }
+        .yellow-row   { background-color: #fefcbf !important; }
+        .red-row      { background-color: #fed7d7 !important; }
+        .hq-row {
+            background-color: #edf2f7 !important;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 50px;
+        }
+        body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding: 40px;
+    color: #333;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Timeline */
+.timeline-bar {
+    display: flex;
+    height: 40px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 20px 0;
+    border: 1px solid #ddd;
+}
+
+.segment {
+    flex: 1;
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+.segment:hover {
+    transform: scaleY(1.12);
+    z-index: 2;
+}
+
+.segment span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+}
+
+/* Status colors */
+.completed   { background: linear-gradient(135deg, #0707a8, #2203ed); }
+.ongoing     { background: linear-gradient(135deg, #ffc107, #e0a800); }
+.coming-next { background: linear-gradient(135deg, #dc3545, #c82333); }
+.later       { background: linear-gradient(135deg, #fd7e14, #e06c00); }
+
+/* Labels */
+.labels {
+    display: flex;
+    margin-top: 12px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+.label {
+    flex: 1;
+    text-align: center;
+}
+
+/* Info Box */
+.info-box {
+    margin-top: 35px;
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.info-box h2 {
+    margin-top: 0;
+    color: #007bff;
+}
+
+.current-day {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Progress bar */
+.progress-container {
+    background: #e9ecef;
+    border-radius: 20px;
+    height: 24px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(135deg, #28a745, #218838);
+    width: 0%;
+    color: white;
+    font-weight: bold;
+    line-height: 24px;
+    transition: width 0.6s ease;
+}
+    </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    <div><strong>Data Quality Control — QC Reports</strong></div>
+<h1>Monthly Stations QC Reports & Data Submission Status_2026</h1>
+
+<div class="container">
+    <div class="timeline-bar" id="timeline"></div>
+
+    <div class="labels">
+        <div class="label">QC at Station + Reports Submission</div>
+        <div class="label">Overall Performance Report</div>
+        <div class="label">QC at HQ + Reports Submission</div>
+        <div class="label">Data Archiving</div>
     </div>
 
-   <div class="header">
-    <div class="logo">
-      <img src="../Dashboard/Rwanda.png" alt="Rwanda Logo">
+    <div class="labels" style="font-weight:bold; margin-top:8px;">
+        <div class="label">Days 1–8</div>
+        <div class="label">Day 9</div>
+        <div class="label">Days 10–12</div>
+        <div class="label">Day 13</div>
     </div>
-    <div>
-      <img src="../Dashboard/meteo_logo.jpeg" alt="Meteo Rwanda Logo">
+
+    <div class="info-box">
+        <div id="infoText"></div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
     </div>
-  </div>
+</div>
 
-  <div class="nav">
-     <a href="qc_reports.html">QC Reports</a>
+<div class="controls">
+    <label for="month">Month: </label>
+    <select id="month" onchange="renderTable()">
+        <option value="2026-01">January 2026</option>
+        <option value="2026-02">February 2026</option>
+        <option value="2026-03">March 2026</option>
+        <option value="2026-04">April 2026</option>
+    </select>
+</div>
 
-  </div>
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Station</th>
+            <th>Hourly Data (%)</th>
+            <th>Daily Data (%)</th>
+            <th>QC Daily Report</th>
+            <th>Missing Daily Report</th>
+            <th>QC Hourly Report</th>
+            <th>Missing Hourly Report</th>
+            <th>Climate Summary</th>
+            <th>Report Completion</th>
+        </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+</table>
 
-  <div class="content">
-    <h1>QC Monthly Reports
-      <img src="QC_icon.png" alt="QC Icon" class="qc-icon">
-    </h1>
+<div class="footer">
+    Click "Submitted" to download report (all .docx) • HQ shows headquarters summary
+</div>
 
-    <p>This page contains monthly quality control summaries from <strong>July 2025 to June 2026</strong> for stations monitored by Meteo Rwanda. Each report includes checks for missing data, outliers, sensor faults, and more.</p>
+<script>
+// ───────────────────────────────────────────────
+//     DATA – only stations; HQ percentages are computed automatically
+// ───────────────────────────────────────────────
+const monthlyData = {
+    "2026-01": {
+        BUSOGO:     { h: 94.89, d: 98.03, qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" },
+        BYIMANA:    { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"S" },
+        BYUMBA:     { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" },
+        GIKONGORO:  { h: 100, d: 98.7, qcd:"S", md:"S", qch:"S", mh:"S", cs:"S" },
+        GISENYI:    { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" },
+        GITEGA:     { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" },
+        KAWANGIRE:  { h: 75.4, d: 0, qcd:"N", md:"N", qch:"N", mh:"N", cs:"N" },
+        KIBUNGO:    { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"S" },
+        NYAGATARE:  { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" },
+        RUBENGERA:  { h: 100, d: 100, qcd:"S", md:"S", qch:"S", mh:"S", cs:"S" },
+        RUHENGERI:  { h: 99.91, d: 99.32, qcd:"S", md:"S", qch:"S", mh:"S", cs:"S" },
+        HQ:         { qcd:"S", md:"S", qch:"S", mh:"S", cs:"N" }
+    },
+    // Add other months here when ready
+};
 
-    <div class="report-section">
-      <!-- Monthly Report Boxes -->
-      <!-- You can automate this generation with JavaScript or backend code if needed -->
+const stations = [
+    "BUSOGO", "BYIMANA", "BYUMBA", "GIKONGORO", "GISENYI",
+    "GITEGA", "KAWANGIRE", "KIBUNGO", "NYAGATARE", "RUBENGERA", "RUHENGERI"
+];
 
-      <div class="report-box">
-        <h3>July 2025 QC Summary</h3>
-        <p>Status: <strong>Completed,done on 11 August,2025.</strong></p>
-        <a href="July/Missing Hourly Data Report - All Stations - July 2025.docx" download>📥 Missing_HourlyData</a>
-        <a href="July/MissingDataReport_Daily_AllStations_July_2025.docx" download>📥 Missing_DailyData</a>
-        <a href="July/QC_HourlyData.docx" download>📥 QC_HourlyData</a>
-        <a href="July/QC_DailyData.docx" download>📥 QC_DailyData</a>
-      </div>
-     <div class="report-box">
-        <h3>August 2025 QC Summary</h3>
-        <p>Status: <strong>Completed,done on 5 September,2025.</strong></p>
-        <a href="August/REPORTING STATUS  OF AUGUST 2025.xlsx" download>📥 Reporting Status</a>
-        <a href="August/MissingHourly_082025.docx" download>📥 Missing_HourlyData</a>
-        <a href="August/MissingDaily_082025.docx" download>📥 Missing_DailyData</a>
-        <a href="August/QC_HoulyData_082025.docx" download>📥 QC_HourlyData</a>
-        <a href="August/QC_DailyData_082025.docx" download>📥 QC_DailyData</a>
-      </div>
-      <div class="report-box">
-        <h3>September 2025 QC Summary</h3>
-        <p>Status: <strong>Completed,done on 3 November,2025.</strong></p>
-        <a href="September/Missing_Hourly.docx" download>📥 Missing_HourlyData</a>
-        <a href="September/Missing_Daily.docx" download>📥 Missing_DailyData</a>
-        <a href="September/Errors_Hourly.docx" download>📥 QC_HourlyData</a>
-        <a href="September/Errors_Daily.docx" download>📥 QC_DailyData</a>
-      </div>
-      <div class="report-box">
-        <h3>August 2025 QC Summary</h3>
-        <p>Status: <strong>Completed,done on 5 September,2025.</strong></p>
-        <a href="October/Reporting Status of October-2025 data into Climsoft.xlsx" download>📥 Reporting Status</a>
-        <a href="October/Missing_Hourly.docx" download>📥 Missing_HourlyData</a>
-        <a href="October/Missing_Daily.docx" download>📥 Missing_DailyData</a>
-        <a href="October/Errors_Hourly.docx" download>📥 QC_HourlyData</a>
-        <a href="October/Errors_Daily.docx" download>📥 QC_DailyData</a>
-      </div>
+function getRowClass(h, d) {
+    if (h == null || d == null) return "";
+    if (h >= 90 && d >= 90) return "green-row";
+    if (h >= 90 && d >= 90) return "yellow-row";
+    return "red-row";
+}
 
-    </div>
-  </div>
+function isCompleted(st) {
+    return st.qcd === "S" && st.md === "S" && st.qch === "S" && st.mh === "S" && st.cs === "S";
+}
 
-  <footer>
-    &copy; 2025 Rwanda Meteorology Agency — QC Report Dashboard
-  </footer>
+function renderTable() {
+    const month = document.getElementById("month").value;
+    const data = monthlyData[month] || {};
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    // 1. Collect station rows
+    let rows = stations.map(name => {
+        const rec = data[name] || {};
+        return {
+            name,
+            hourly: rec.h ?? null,
+            daily:  rec.d ?? null,
+            qcd: rec.qcd ?? "N",
+            md:  rec.md  ?? "N",
+            qch: rec.qch ?? "N",
+            mh:  rec.mh  ?? "N",
+            cs:  rec.cs  ?? "N"
+        };
+    });
+
+    // 2. Compute HQ averages automatically
+    let sumH = 0;
+    let sumD = 0;
+    rows.forEach(st => {
+        sumH += (st.hourly || 0);
+        sumD += (st.daily  || 0);
+    });
+
+    const avgH = (sumH / stations.length).toFixed(1);
+    const avgD = (sumD / stations.length).toFixed(1);
+
+    // 3. HQ report statuses (from data or default)
+    const hqData = data.HQ || {};
+    const hq = {
+        name: "HQ",
+        hourly: parseFloat(avgH),
+        daily:  parseFloat(avgD),
+        qcd: hqData.qcd ?? "N",
+        md:  hqData.md  ?? "N",
+        qch: hqData.qch ?? "N",
+        mh:  hqData.mh  ?? "N",
+        cs:  hqData.cs  ?? "N"
+    };
+    const hqCompleted = isCompleted(hq);
+
+   
+   // 4. Sort stations with new priority order:
+//    1. Number of submitted reports (descending)
+//    2. Hourly data % (descending)
+//    3. Daily data % (descending)
+rows.sort((a, b) => {
+    // Count number of "S" for each station
+    const countA = [a.qcd, a.md, a.qch, a.mh, a.cs].filter(v => v === "S").length;
+    const countB = [b.qcd, b.md, b.qch, b.mh, b.cs].filter(v => v === "S").length;
+
+    if (countA !== countB) {
+        return countB - countA;           // more reports first
+    }
+
+    const hA = a.hourly || 0;
+    const hB = b.hourly || 0;
+    if (hA !== hB) {
+        return hB - hA;                   // higher hourly % first
+    }
+
+    const dA = a.daily || 0;
+    const dB = b.daily || 0;
+    return dB - dA;                       // higher daily % first
+});
+    // 5. Render ranked station rows
+    rows.forEach((st, index) => {
+        const rank = index + 1;
+        const h = st.hourly != null ? st.hourly.toFixed(1) + "%" : "—";
+        const d = st.daily  != null ? st.daily.toFixed(1)  + "%" : "—";
+        const cls = getRowClass(st.hourly, st.daily);
+        const completed = isCompleted(st);
+
+        const row = document.createElement("tr");
+        row.className = cls;
+
+        row.innerHTML = `
+            <td>${rank}</td>
+            <td class="station-name">${st.name}</td>
+            <td>${h}</td>
+            <td>${d}</td>
+            <td class="${st.qcd==='S'?'submitted':'not-submitted'}">
+                ${st.qcd==='S' ? `<a href="reports/${month}/${st.name}_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
+            </td>
+            <td class="${st.md==='S'?'submitted':'not-submitted'}">
+                ${st.md==='S' ? `<a href="reports/${month}/${st.name}_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
+            </td>
+            <td class="${st.qch==='S'?'submitted':'not-submitted'}">
+                ${st.qch==='S' ? `<a href="reports/${month}/${st.name}_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+            </td>
+            <td class="${st.mh==='S'?'submitted':'not-submitted'}">
+                ${st.mh==='S' ? `<a href="reports/${month}/${st.name}_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+            </td>
+            <td class="${st.cs==='S'?'submitted':'not-submitted'}">
+                ${st.cs==='S' ? `<a href="reports/${month}/${st.name}_Climate_Summary.pdf" download>Submitted</a>` : "Not submitted"}
+            </td>
+            <td class="${completed ? 'completed' : 'not-completed'}">
+                ${completed ? "Completed" : "Not Completed"}
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    // 6. Render HQ row last (no rank number)
+    const hqRow = document.createElement("tr");
+    hqRow.className = "hq-row";
+    hqRow.innerHTML = `
+        <td>HQ</td>
+        <td class="station-name">Headquarters</td>
+        <td>${avgH}%</td>
+        <td>${avgD}%</td>
+        <td class="${hq.qcd==='S'?'submitted':'not-submitted'}">
+            ${hq.qcd==='S' ? `<a href="reports/${month}/HQ_QC_Daily.docx" download>Submitted</a>` : "Not submitted"}
+        </td>
+        <td class="${hq.md==='S'?'submitted':'not-submitted'}">
+            ${hq.md==='S' ? `<a href="reports/${month}/HQ_Missing_Daily.docx" download>Submitted</a>` : "Not submitted"}
+        </td>
+        <td class="${hq.qch==='S'?'submitted':'not-submitted'}">
+            ${hq.qch==='S' ? `<a href="reports/${month}/HQ_QC_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+        </td>
+        <td class="${hq.mh==='S'?'submitted':'not-submitted'}">
+            ${hq.mh==='S' ? `<a href="reports/${month}/HQ_Missing_Hourly.docx" download>Submitted</a>` : "Not submitted"}
+        </td>
+        <td class="${hq.cs==='S'?'submitted':'not-submitted'}">
+            ${hq.cs==='S' ? `<a href="reports/${month}/HQ_Climate_Summary.docx" download>Submitted</a>` : "Not submitted"}
+        </td>
+        <td class="${hqCompleted ? 'completed' : 'not-completed'}">
+            ${hqCompleted ? "Completed" : "Not Completed"}
+        </td>
+    `;
+    tbody.appendChild(hqRow);
+}
+
+renderTable();
+</script>
+
+<script>
+// Timeline logic (unchanged from your original)
+const PROJECT_START_DATE = new Date("2026-02-01");
+const TOTAL_DAYS = 13;
+
+const phases = [
+    { name: "QC at Station + Reports Submission", days: [1,8] },
+    { name: "Overall Performance Report", days: [9,9] },
+    { name: "QC at HQ+ Report Submission", days: [10,12] },
+    { name: "Data Archiving", days: [13,13] }
+];
+
+function getDayOfProcess() {
+    const today = new Date();
+    const diffTime = today - PROJECT_START_DATE;
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+}
+
+function getPhaseStatus(day, phase) {
+    if (day > phase.days[1]) return "completed";
+    if (day >= phase.days[0] && day <= phase.days[1]) return "ongoing";
+    if (phase.days[0] === 13) return "later";
+    return "coming-next";
+}
+
+const todayDay = Math.min(getDayOfProcess(), TOTAL_DAYS);
+const timeline = document.getElementById("timeline");
+const infoText = document.getElementById("infoText");
+const progressBar = document.getElementById("progressBar");
+
+let currentPhaseName = "Not Started";
+let currentStatusText = "Not Started";
+
+phases.forEach(phase => {
+    const seg = document.createElement("div");
+    const status = getPhaseStatus(todayDay, phase);
+
+    if (status === "ongoing") {
+        currentPhaseName = phase.name;
+        currentStatusText = "Ongoing";
+    }
+
+    seg.className = `segment ${status}`;
+    seg.innerHTML = `<span>${status.replace("-", " ").toUpperCase()}</span>`;
+    timeline.appendChild(seg);
+});
+
+const progressPercent = Math.round((todayDay / TOTAL_DAYS) * 100);
+progressBar.style.width = progressPercent + "%";
+progressBar.textContent = progressPercent + "%";
+
+infoText.innerHTML = `
+    <p>Today’s date: <span class="current-day">${new Date().toDateString()}</span></p>
+    <p><strong>Day ${todayDay} of ${TOTAL_DAYS}</strong></p>
+    <p>Ongoing Activities: <strong>${currentPhaseName}</strong></p>
+`;
+</script>
 
 </body>
 </html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>METEO TXT → Excel Combiner (Pure JavaScript)</title>
+
+    <!-- SheetJS library for Excel export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: #f0f8ff;
+            margin: 0;
+        }
+        h1 {
+            color: #0066cc;
+        }
+        p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        input[type="file"] {
+            margin: 20px;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 20px;
+            cursor: pointer;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0055aa;
+        }
+        button:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 30px;
+            font-size: 18px;
+            min-height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>METEO TXT → Excel Combiner</h1>
+    <p>Select all your <b>.txt</b> meteo files and click <b>Combine</b> to merge them into one sorted Excel file.</p>
+
+    <input type="file" id="files" multiple accept=".txt,text/plain"><br>
+    <button onclick="combineTXT()" id="combineBtn">Combine TXT Files</button>
+
+    <div id="status"></div>
+
+    <script>
+        function combineTXT() {
+            const fileInput = document.getElementById("files");
+            const files = fileInput.files;
+            const status = document.getElementById("status");
+            const button = document.getElementById("combineBtn");
+
+            if (!files.length) {
+                status.innerHTML = "<span style='color:red;'>Please select at least one TXT file.</span>";
+                return;
+            }
+
+            status.innerHTML = "Reading files...";
+            button.disabled = true;
+
+            const allRows = [];
+            const columns = ["Timestamp", "Value1", "Pressure_hPa", "Temp_C", "Value4", "Humidity_%", "Value6", "Battery_%", "Source_File"];
+            let processed = 0;
+            let validRows = 0;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const text = e.target.result;
+                    const lines = text.split(/\r?\n/);
+
+                    lines.forEach((line, index) => {
+                        line = line.trim();
+                        if (!line) return; // skip empty lines
+
+                        const parts = line.split(";").map(p => p.trim());
+                        if (parts.length < 8) {
+                            console.warn(`Skipping malformed line ${index + 1} in ${file.name}:`, line);
+                            return;
+                        }
+
+                        // Keep original timestamp but also parse for sorting
+                        const originalTimestamp = parts[0];
+                        const dateObj = new Date(originalTimestamp);
+
+                        allRows.push({
+                            _sortDate: isNaN(dateObj) ? originalTimestamp : dateObj, // for sorting only
+                            Timestamp: originalTimestamp,
+                            Value1: parts[1],
+                            Pressure_hPa: parts[2],
+                            Temp_C: parts[3],
+                            Value4: parts[4],
+                            Humidity_%: parts[5],
+                            Value6: parts[6],
+                            Battery_%: parts[7],
+                            Source_File: file.name
+                        });
+                        validRows++;
+                    });
+
+                    processed++;
+                    status.innerHTML = `Processing... (${processed}/${files.length} files read)`;
+
+                    if (processed === files.length) {
+                        if (validRows === 0) {
+                            status.innerHTML = "<span style='color:red;'>No valid data found in selected files.</span>";
+                            button.disabled = false;
+                            return;
+                        }
+
+                        status.innerHTML = "Sorting by timestamp and generating Excel...";
+
+                        // Sort by actual date (fallback to string if invalid)
+                        allRows.sort((a, b) => {
+                            if (a._sortDate instanceof Date && b._sortDate instanceof Date) {
+                                return a._sortDate - b._sortDate;
+                            }
+                            return String(a._sortDate).localeCompare(String(b._sortDate));
+                        });
+
+                        // Remove helper field before export
+                        const cleanRows = allRows.map(row => {
+                            const { _sortDate, ...clean } = row;
+                            return clean;
+                        });
+
+                        // Create workbook
+                        const ws = XLSX.utils.json_to_sheet(cleanRows, { header: columns });
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "Combined_Meteo");
+
+                        // Auto-size columns (optional nice touch)
+                        const colWidths = columns.map((_, i) => {
+                            const max = Math.max(
+                                columns[i].length,
+                                ...cleanRows.map(row => String(row[columns[i]] || "").length)
+                            );
+                            return { wch: Math.min(50, max + 4) };
+                        });
+                        ws['!cols'] = colWidths;
+
+                        // Download
+                        XLSX.writeFile(wb, "combined_meteo.xlsx");
+
+                        status.innerHTML = `<span style='color:green;'>Excel file created successfully! (${validRows} rows from ${files.length} files)</span>`;
+                        button.disabled = false;
+                    }
+                };
+
+                reader.onerror = function() {
+                    status.innerHTML = `<span style='color:red;'>Error reading file: ${file.name}</span>`;
+                    processed++;
+                };
+
+                reader.readAsText(file, "UTF-8");
+            });
+        }
+
+        // Optional: reset status when new files selected
+        document.getElementById("files").addEventListener("change", function() {
+            document.getElementById("status").innerHTML = "";
+            document.getElementById("combineBtn").disabled = false;
+        });
+    </script>
+
+</body>
+</html>
